@@ -1,6 +1,6 @@
 package com.baldwin.entity;
 
-public class Role {
+public class RoleInfo {
     private int roleId;
     private String relation;
     private String nickname;

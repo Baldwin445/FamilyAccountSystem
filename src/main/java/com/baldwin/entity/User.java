@@ -4,8 +4,8 @@ public class User {
     private int id;
     private int roleId;
     private int houseId;
-    private String username;
-    private String password;
+    private String acct;
+    private String pwd;
     private String profile;
 
     @Override
@@ -14,8 +14,8 @@ public class User {
                 "id=" + id +
                 ", roleId=" + roleId +
                 ", houseId=" + houseId +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", acct='" + acct + '\'' +
+                ", password='" + pwd + '\'' +
                 ", profile='" + profile + '\'' +
                 '}';
     }
@@ -44,20 +44,20 @@ public class User {
         this.houseId = houseId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getAcct() {
+        return acct;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAcct(String acct) {
+        this.acct = acct;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPwd() {
+        return pwd;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 
     public String getProfile() {

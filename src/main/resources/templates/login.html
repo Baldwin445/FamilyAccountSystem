@@ -1,10 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>家庭财务管理系统</title>
+    <link th:href="@{/css/font.css}" rel="stylesheet"/>
+    <link th:href="@{/css/xadmin.css}" rel="stylesheet"/>
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet"/>
+    <!--    引用js时不能使用<script /> 会莫名导致死循环-->
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
+    <script type="text/javascript" th:src="@{/js/echarts.min.js}"></script>
+    <script type="text/javascript" th:src="@{/lib/layui/layui.js}"></script>
 </head>
-<body>
+<body class="login-bg">
+
+<div class="login layui-anim layui-anim-up">
+    <div class="message">家庭财务管理系统</div>
+    <div id="darkbannerwrap"></div>
+
+    <form method="post" class="layui-form" >
+        <input name="acct" placeholder="用户名"  type="text" lay-verify="required" class="layui-input" >
+        <hr class="hr15">
+        <input name="pwd" lay-verify="required" placeholder="密码"  type="password" class="layui-input">
+        <hr class="hr15">
+        <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
+        <hr class="hr20" >
+    </form>
+</div>
+
+
+<script>
+    $(function  () {
+        layui.use('form', function(){
+            var form = layui.form;
+            form.on('submit(login)', function(data){
+                $.post("/login.check",data.field,function(res){
+                    if(res.id == 1){
+                        layer.msg("登录成功，正在跳转...",{time:400},function () {
+                            top.location.href='/index';
+                        });
+                    }else {
+                        layer.msg("用户名或密码错误！")
+                    }
+                },"json");
+                return false;
+            });
+        });
+    })
+
+
+</script>
 
 </body>
 </html>

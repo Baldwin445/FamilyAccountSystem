@@ -32,7 +32,7 @@ spring:
 
       # 是否缓存preparedStatement，也就是PSCache  官方建议MySQL下建议关闭   个人建议如果想用SQL防火墙 建议打开
       # 打开PSCache，并且指定每个连接上PSCache的大小
-      pool-prepared-statements: true
+      pool-prepared-statements: false
       max-open-prepared-statements: 20
       max-pool-prepared-statement-per-connection-size: 20
 

@@ -11,7 +11,7 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 20/03/2021 21:33:54
+ Date: 21/03/2021 15:32:45
 */
 
 SET NAMES utf8mb4;
@@ -40,10 +40,10 @@ CREATE TABLE `bill`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 195 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for house
+-- Table structure for home
 -- ----------------------------
-DROP TABLE IF EXISTS `house`;
-CREATE TABLE `house`  (
+DROP TABLE IF EXISTS `home`;
+CREATE TABLE `home`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `ownerid` int(11) NOT NULL COMMENT '户主编号',
   `member` int(2) UNSIGNED ZEROFILL NULL DEFAULT NULL COMMENT '家庭人数',
@@ -51,7 +51,7 @@ CREATE TABLE `house`  (
   `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '家庭住址',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `holderid`(`ownerid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for payway
@@ -64,10 +64,10 @@ CREATE TABLE `payway`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for role
+-- Table structure for roleinfo
 -- ----------------------------
-DROP TABLE IF EXISTS `role`;
-CREATE TABLE `role`  (
+DROP TABLE IF EXISTS `roleinfo`;
+CREATE TABLE `roleinfo`  (
   `roleid` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `relation` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '关系名称',
   `nickname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户昵称',
@@ -75,7 +75,6 @@ CREATE TABLE `role`  (
   `tel` int(11) NULL DEFAULT NULL COMMENT '用户电话',
   `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '邮箱',
   PRIMARY KEY (`roleid`) USING BTREE,
-  CONSTRAINT `role_ibfk_1` FOREIGN KEY (`roleid`) REFERENCES `user` (`roleid`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -95,15 +94,15 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `roleid` int(11) NOT NULL DEFAULT 3 COMMENT '角色编号',
-  `houseid` int(11) NULL DEFAULT NULL COMMENT '所属家庭编号',
-  `username` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '账号',
-  `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码',
+  `homeid` int(11) NULL DEFAULT NULL COMMENT '所属家庭编号',
+  `acct` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '账号',
+  `pwd` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码',
   `profile` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '头像',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `houseid`(`houseid`) USING BTREE,
+  INDEX `homeid`(`homeid`) USING BTREE,
   INDEX `roleid`(`roleid`) USING BTREE,
-  CONSTRAINT `user_ibfk_2` FOREIGN KEY (`houseid`) REFERENCES `house` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `user_ibfk_3` FOREIGN KEY (`roleid`) REFERENCES `role` (`roleid`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `user_ibfk_2` FOREIGN KEY (`homeid`) REFERENCES `home` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `user_ibfk_3` FOREIGN KEY (`roleid`) REFERENCES `roleinfo` (`roleid`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
