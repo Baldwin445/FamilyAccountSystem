@@ -1,8 +1,10 @@
 package com.baldwin.utils;
 
+import com.baldwin.entity.Menu;
 import com.baldwin.entity.User;
 
 import java.util.Date;
+import java.util.List;
 
 public class LogUtil {
     public static String logInfo(String key, String value){
@@ -23,5 +25,10 @@ public class LogUtil {
                 "[ " + value + " ]";
         System.out.println(info);
         return info;
+    }
+
+    public static void logMenus(List<Menu> menus){
+        for(Menu m:menus)
+            System.out.println(m);
     }
 }

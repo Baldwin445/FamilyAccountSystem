@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baldwin.dao.MenuMapper">
+
+    <select id="getMenusByUserID" resultType="com.baldwin.entity.Menu" parameterType="Integer">
+        SELECT p.* FROM permission rp LEFT JOIN menu p ON rp.access = p.access
+                    WHERE rp.userid = #{userid} ORDER BY menuid ASC
+    </select>
+
+    <select id="getMenusByIDMenuLv" resultType="com.baldwin.entity.Menu">
+        SELECT p.* FROM permission rp LEFT JOIN menu p ON rp.access = p.access
+        WHERE rp.userid = #{userid} and p.menulevel = #{menulv} ORDER BY menuid ASC
+    </select>
+
+    <select id="getMenusByID_Lv_Type" resultType="com.baldwin.entity.Menu">
+        SELECT p.* FROM permission rp LEFT JOIN menu p ON rp.access = p.access
+        WHERE rp.userid = #{userid} and p.menulevel = #{menulv} and p.menutype = #{type}
+        ORDER BY menuid ASC
+    </select>
+
+</mapper>

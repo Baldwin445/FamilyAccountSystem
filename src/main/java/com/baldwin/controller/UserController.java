@@ -1,9 +1,12 @@
 package com.baldwin.controller;
 
+import com.baldwin.entity.Menu;
 import com.baldwin.entity.RoleInfo;
 import com.baldwin.entity.User;
+import com.baldwin.service.MenuService;
 import com.baldwin.service.UserService;
 import com.baldwin.utils.LogUtil;
+import com.baldwin.utils.MenuUtil;
 import com.baldwin.utils.UserUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @ClassName: UserController
@@ -26,6 +30,8 @@ import java.io.IOException;
 public class UserController {
     @Resource
     private UserService userService;
+    @Resource
+    private MenuService menuService;
 
     /*
     * the beginning page
@@ -68,6 +74,7 @@ public class UserController {
         User current = (User) session.getAttribute(UserUtil.CURRENT_USER);
         RoleInfo userInfo = userService.getCurrentUserInfo(current.getRoleId());
         m.addAttribute("name", userInfo.getNickname());
+        m.addAttribute(MenuUtil.USER_MENUS, setSessionMenus(current, session));
         return "index";
     }
 
@@ -80,5 +87,19 @@ public class UserController {
     public String welcomePage(Model m, HttpServletRequest request){
         m.addAttribute("name", "TEST!");
         return "hello";
+    }
+
+
+    /**
+     * Using by UserID to find the MENUS and put it in Session
+     * 通过用户信息获取用户权限信息，并存入session中
+     * @param user
+     * @param session
+     * @return
+     */
+    public List<Menu> setSessionMenus(User user, HttpSession session){
+        List<Menu> menusNew = menuService.getCorrectMenusByID(user.getId());   //获取已分级的新菜单
+        session.setAttribute(MenuUtil.USER_MENUS, menusNew);
+        return menusNew;
     }
 }
