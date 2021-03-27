@@ -14,4 +14,5 @@ public class MenuUtil {
 
     //Menu Session KeyWord
     public static String USER_MENUS = "userMenus";
+    public static String USER_TOOLBAR = "userToolbar";
 }

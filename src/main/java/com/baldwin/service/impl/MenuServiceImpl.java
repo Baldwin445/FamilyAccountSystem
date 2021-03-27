@@ -49,4 +49,23 @@ public class MenuServiceImpl implements MenuService {
         }
         return menus;
     }
+
+    @Override
+    public List<Menu> getToolbarByMenuLv(int menulv) {
+        return mapper.getToolbarByMenuLv(menulv);
+    }
+
+    @Override
+    public List<Menu> getToolbarByMenuLv_Type(int menulv, String type) {
+        return mapper.getToolbarByMenuLv_Type(menulv, type);
+    }
+
+    @Override
+    public List<Menu> getCorrectToolbar() {
+        //return a initial top ToolBar including second-level menus
+        List<Menu> menus = mapper.getToolbarByMenuLv(MenuUtil.MENU_LEVEL_ONE);
+        for(Menu m: menus)
+            m.setSecondMenus(mapper.getToolbarByMenuLv_Type(MenuUtil.MENU_LEVEL_TWO, m.getMenutype()));
+        return menus;
+    }
 }

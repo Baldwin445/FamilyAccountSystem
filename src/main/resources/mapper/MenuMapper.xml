@@ -19,5 +19,13 @@
         WHERE rp.userid = #{userid} and p.menulevel = #{menulv} and p.menutype = #{type}
         ORDER BY menuid ASC
     </select>
+    
+    <select id="getToolbarByMenuLv" resultType="com.baldwin.entity.Menu">
+        SELECT * FROM menu WHERE menulevel = #{menulv} AND location = 'top'
+    </select>
+
+    <select id="getToolbarByMenuLv_Type" resultType="com.baldwin.entity.Menu">
+        SELECT * FROM menu WHERE menulevel = #{menulv} AND menutype = #{type} AND location = 'top'
+    </select>
 
 </mapper>

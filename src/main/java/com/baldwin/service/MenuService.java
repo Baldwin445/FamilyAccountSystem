@@ -21,4 +21,10 @@ public interface MenuService {
 
     List<Menu> getMenusByID_Lv_Type(int userid, int menulv, String type);
 
+    List<Menu> getToolbarByMenuLv(int menulv);
+
+    List<Menu> getToolbarByMenuLv_Type(int menulv, String type);
+
+    List<Menu> getCorrectToolbar();
+
 }

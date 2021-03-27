@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>接口管理平台</title>
     <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
+
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
@@ -13,26 +15,19 @@
         <div class="layui-logo">家庭财务管理系统</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="">首页</a></li>
-            <li class="layui-nav-item"><a href="">新增收支</a></li>
-            <li class="layui-nav-item">
-                <a href="javascript:;">账单导入</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="">数据导入</a></dd>
-                    <dd><a href="">数据导出</a></dd>
-                    <dd><a href="">删除账单</a></dd>
+            <li class="layui-nav-item" th:each="tb:${userToolbar}">
+                <a th:href="@{'/pages/'+${tb.url}}"
+                   th:text="${tb.menuname}"></a>
+                <dl class="layui-nav-child" th:if="${not #lists.isEmpty(tb.secondMenus)}">
+                    <dd th:each="tchild:${tb.secondMenus}">
+                        <a th:href="@{'/pages/'+${tchild.url}}"
+                           th:text="${tchild.menuname}"></a>
+                    </dd>
                 </dl>
             </li>
-            <li class="layui-nav-item">
-                <a href="javascript:;">报销冲账</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="">添加报销</a></dd>
-                    <dd><a href="">未报销</a></dd>
-                    <dd><a href="">已报销</a></dd>
-                </dl>
-            </li>
-            <li class="layui-nav-item"><a href="">系统设置</a></li>
         </ul>
+
+        <!--  The right of Toolbar   -->
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <a href="javascript:;">
@@ -61,7 +56,8 @@
                     <dl class="layui-nav-child">
                         <dd th:each="child:${menu.secondMenus}">
                             <a href="javascript:;"
-                               th:text="${child.menuname}">子菜单</a>
+                               th:text="${child.menuname}"
+                               th:href="@{'/pages/'+${child.url}}">子菜单</a>
                         </dd>
                     </dl>
                 </li>
@@ -70,13 +66,15 @@
         </div>
     </div>
 
+    <!-- 内容主体区域 -->
     <div class="layui-body">
-        <!-- 内容主体区域 -->
-        <div style="padding: 15px;">内容主体区域</div>
-        <div style="padding: 15px;">
-            <p th:text="${name}">name</p>
-            <p th:text="'Hello！ ' + ${name} + '!'">hello world</p>
-            <p th:text="|Hello！ ${name}!|">hello world</p>
+        <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+<!--                    iframe中src不用请求无法获取Thymeleaf中的数据-->
+                    <iframe id="iframeMain" src='/welcome' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -91,6 +89,12 @@
     layui.use('element', function(){
         var element = layui.element;
 
+    });
+    $(document).ready(function(){
+        $("dd>a").click(function (e) {
+            e.preventDefault();
+            $("#iframeMain").attr("src",$(this).attr("href"));
+        });
     });
 </script>
 </body>

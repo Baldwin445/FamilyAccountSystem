@@ -37,7 +37,7 @@
                 $.post("/login.check",data.field,function(res){
                     if(res.id == 1){
                         layer.msg("登录成功，正在跳转...",{time:400},function () {
-                            top.location.href='/index';
+                            top.location.href='/pages/index';
                         });
                     }else {
                         layer.msg("用户名或密码错误！")
