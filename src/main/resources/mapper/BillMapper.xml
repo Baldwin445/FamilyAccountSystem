@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baldwin.dao.BillMapper">
+
+    <insert id="addPayBill" parameterType="com.baldwin.entity.Bill" useGeneratedKeys="true" keyProperty="id">
+        insert into bill(id,tagid,type,userid,money,comment,time)
+        value (null, #{tagid},#{typeid},#{userid},#{money},#{comment},#{time})
+    </insert>
+
+    <insert id="addIncomeBill" parameterType="com.baldwin.entity.Bill" useGeneratedKeys="true" keyProperty="id">
+        insert into bill(id,tagid,type,userid,money,comment,time)
+            value (null, #{tagid},#{typeid},#{userid},#{money},#{comment},#{time})
+    </insert>
+
+</mapper>

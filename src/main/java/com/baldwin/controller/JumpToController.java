@@ -25,4 +25,9 @@ public class JumpToController {
     public String toPage() {
         return "welcome";
     }
+
+    @RequestMapping("/test")
+    public String toTestPage() {
+        return "/details/add";
+    }
 }

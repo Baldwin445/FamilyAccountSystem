@@ -2,10 +2,13 @@ package com.baldwin.entity;
 
 public class Bill {
     private int id;
-    private int paywayId;
-    private int tagId;
-    private int type;
-    private int userId;
+    private int tagid;
+    private String tagName;
+    private int typeid;        //1 支出 2 收入
+    private String type;
+    private String collectid;  //导入账单id
+    private int paywayid;      //判断导入账单的类型
+    private int userid;
     private float money;
     private String comment;
     private String time;
@@ -14,54 +17,81 @@ public class Bill {
     public String toString() {
         return "Bill{" +
                 "id=" + id +
-                ", paywayId=" + paywayId +
-                ", tagId=" + tagId +
-                ", type=" + type +
-                ", userId=" + userId +
+                ", tagid=" + tagid +
+                ", tagName='" + tagName + '\'' +
+                ", typeid=" + typeid +
+                ", type='" + type + '\'' +
+                ", collectid='" + collectid + '\'' +
+                ", paywayid=" + paywayid +
+                ", userid=" + userid +
                 ", money=" + money +
                 ", comment='" + comment + '\'' +
                 ", time='" + time + '\'' +
                 '}';
     }
 
-    public int getId() {
-        return id;
+    public int getTypeid() {
+        return typeid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getTagName() {
+        return tagName;
     }
 
-    public int getPaywayId() {
-        return paywayId;
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
     }
 
-    public void setPaywayId(int paywayId) {
-        this.paywayId = paywayId;
-    }
-
-    public int getTagId() {
-        return tagId;
-    }
-
-    public void setTagId(int tagId) {
-        this.tagId = tagId;
-    }
-
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setTypeid(int typeid) {
+        this.typeid = typeid;
+    }
+
+    public void setType(String type) {
         this.type = type;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getCollectid() {
+        return collectid;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setCollectid(String collectid) {
+        this.collectid = collectid;
+    }
+
+    public int getid() {
+        return id;
+    }
+
+    public void setid(int id) {
+        this.id = id;
+    }
+
+    public int getPaywayid() {
+        return paywayid;
+    }
+
+    public void setPaywayid(int paywayid) {
+        this.paywayid = paywayid;
+    }
+
+    public int getTagid() {
+        return tagid;
+    }
+
+    public void setTagid(int tagid) {
+        this.tagid = tagid;
+    }
+
+    public int getUserid() {
+        return userid;
+    }
+
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
     public float getMoney() {

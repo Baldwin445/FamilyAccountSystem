@@ -21,11 +21,6 @@ public class UserUtil {
     public static int USER_ACCESS_HOST = 3;
     public static int USER_ACCESS_MEMBER = 1;
 
-    //Result
-    public static int SUCCESS=200; //成功
-    public static int UNSUCCESS=400;   //失败
-    public static int ERROR=500;   //异常
-
 
     //get User in session
     public static User getSessionUser(HttpSession session){

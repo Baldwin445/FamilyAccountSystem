@@ -26,6 +26,7 @@ import java.util.List;
  * @Description: deal with UserService class
  * @author: Baldwin445
  * @date: 21/3/21 10:57
+ * TODO: 1. 登录后，切换首页所获取的数据消失
  */
 @Controller
 public class UserController {
@@ -55,16 +56,17 @@ public class UserController {
     }
 
     /*
-    * confirm the acct info in form
+    * confirm the acct info of the post form
     * */
     @RequestMapping("/login.check")
     @ResponseBody
     public User login(HttpServletRequest request, String acct, String pwd){
-        LogUtil.logInfo("ACCT", acct);
-        LogUtil.logInfo("PWD", pwd);
+        LogUtil.log("ACCT", acct);
+        LogUtil.log("PWD", pwd);
 
         User user = userService.loginConfirm(acct, pwd);
         request.getSession().setAttribute(UserUtil.CURRENT_USER, user);
+        request.getSession().setAttribute(UserUtil.CURRENT_USERID, user.getId());
 
         return user;
     }
@@ -95,6 +97,10 @@ public class UserController {
         return mav;
     }
 
+    /*
+    * the post of getting current userid
+    */
+
 
     /**
      * Using by UserID to find the MENUS and put it in Session
@@ -108,8 +114,8 @@ public class UserController {
         List<Menu> toolBar = menuService.getCorrectToolbar();
         session.setAttribute(MenuUtil.USER_MENUS, menusNew);
         session.setAttribute(MenuUtil.USER_TOOLBAR, toolBar);
-        LogUtil.logMenus(menusNew);
-        LogUtil.logMenus(toolBar);
+//        LogUtil.log(menusNew);
+//        LogUtil.log(toolBar);
         return menusNew;
     }
 }

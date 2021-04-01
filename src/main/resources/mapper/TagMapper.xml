@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baldwin.dao.TagMapper">
+
+    <select id="getDefaultTag" resultType="com.baldwin.entity.Tag">
+        SELECT * FROM tag WHERE userid = 0 AND type = 1
+    </select>
+    <select id="getUserTag" resultType="com.baldwin.entity.Tag">
+        SELECT * FROM tag WHERE userid = #{userid} AND type = 1
+    </select>
+
+    <select id="getDefaultIncomeTag" resultType="com.baldwin.entity.Tag">
+        SELECT * FROM tag WHERE userid = 0 AND type = 2
+    </select>
+    <select id="getUserIncomeTag" resultType="com.baldwin.entity.Tag">
+        SELECT * FROM tag WHERE userid = #{userid} AND type = 2
+    </select>
+
+    <select id="tagNameToID" resultType="com.baldwin.entity.Tag">
+        SELECT * FROM tag WHERE userid = #{userid} AND tagname = #{tagName}
+    </select>
+</mapper>
