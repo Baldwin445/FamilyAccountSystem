@@ -5,8 +5,7 @@ import com.baldwin.entity.RoleInfo;
 import com.baldwin.entity.User;
 import com.baldwin.service.MenuService;
 import com.baldwin.service.UserService;
-import com.baldwin.utils.LogUtil;
-import com.baldwin.utils.MenuUtil;
+import com.baldwin.utils.*;
 import com.baldwin.utils.UserUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,6 +70,31 @@ public class UserController {
         return user;
     }
 
+    /**
+     * turn to Register Page
+     */
+    @RequestMapping("/register")
+    public String registerPage(){
+        return "register";
+    }
+
+    /**
+     * register self
+     * set the NEW USER nothing info
+     */
+    @RequestMapping("/regSelf")
+    @ResponseBody
+    public Result addUserSelf(User user){
+        if (userService.existUserCheck(user.getAcct()) > 0)
+            return ResultUtil.unSuccess("用户已存在！");
+        userService.regUser(user);
+        System.out.println(user);
+        LogUtil.log(user);
+        userService.setUserPermission(user, UserUtil.USER_ACCESS_MEMBER);
+
+        return ResultUtil.success();
+    }
+
     @RequestMapping(value = {"/pages/index"})
     public String indexPage(Model m, HttpServletRequest request){
         HttpSession session = request.getSession();
@@ -97,11 +121,6 @@ public class UserController {
         return mav;
     }
 
-    /*
-    * the post of getting current userid
-    */
-
-
     /**
      * Using by UserID to find the MENUS and put it in Session
      * 通过用户信息获取用户菜单信息，并存入session中
@@ -118,4 +137,5 @@ public class UserController {
 //        LogUtil.log(toolBar);
         return menusNew;
     }
+
 }

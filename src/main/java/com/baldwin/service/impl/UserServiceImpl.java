@@ -28,4 +28,22 @@ public class UserServiceImpl implements UserService {
     public RoleInfo getCurrentUserInfo(int userid) {
         return mapper.getCurrentUserInfo(userid);
     }
+
+    @Override
+    public int regUser(User user) {
+        return mapper.regUser(user);
+    }
+
+    /**
+     * @return return the count of the same acct name
+     */
+    @Override
+    public int existUserCheck(String acct) {
+        return mapper.existUserCheck(acct);
+    }
+
+    @Override
+    public int setUserPermission(User user, int access){
+        return mapper.setUserPermission(user.getId(), access);
+    }
 }

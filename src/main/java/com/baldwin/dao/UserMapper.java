@@ -9,4 +9,10 @@ public interface UserMapper {
     User loginConfirm(String acct, String pwd);
 
     RoleInfo getCurrentUserInfo(int userid);
+
+    int regUser(User user);
+
+    int existUserCheck(String acct);
+
+    int setUserPermission(int userid, int access);
 }

@@ -8,4 +8,10 @@ public interface UserService {
 
     RoleInfo getCurrentUserInfo(int userid);
 
+    int regUser(User user);
+
+    int existUserCheck(String acct);
+
+    int setUserPermission(User user, int access);
+
 }

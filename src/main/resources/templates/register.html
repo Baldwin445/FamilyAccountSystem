@@ -18,6 +18,9 @@
         .layui-form-item a:hover{
             text-decoration:underline;
         }
+        #tips{
+            color: #9b9b9b;
+        }
     </style>
 </head>
 <body class="login-bg">
@@ -31,32 +34,44 @@
         <hr class="hr15">
         <input name="pwd" lay-verify="required" placeholder="密码"  type="password" class="layui-input">
         <hr class="hr15">
-        <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
+        <input name="comfirm" lay-verify="required|comfirm" placeholder="确认密码"  type="password" class="layui-input">
+        <hr class="hr15">
+        <input value="注册" lay-submit lay-filter="reg" style="width:100%;" type="submit">
         <hr class="hr20" >
         <div class="layui-form-item">
-            <label>初次使用？</label>
-            <a href="/register" >点击注册</a>
+            <label>已有账号？</label>
+            <a href="/login" >点击登录</a>
+        </div>
+        <div class="layui-form-item">
+            <label id="tips">建议使用管理员/户主账号进行注册，在此注册仅能享受基础记账功能！</label>
         </div>
     </form>
 </div>
 
 
 <script>
-    //TODO: 用户登录码检测
     $(function  () {
         layui.use('form', function(){
             var form = layui.form;
-            form.on('submit(login)', function(data){
-                $.post("/login.check",data.field,function(res){
-                    if(res.id == 1){
-                        layer.msg("登录成功，正在跳转...",{time:400},function () {
-                            top.location.href='/pages/index';
+            form.verify({
+                comfirm: function(value){
+                    if($('input[name=pwd]').val() !== value)
+                        return '两次输入密码不一致！';
+                }
+            })
+            form.on('submit(reg)', function(data){
+                $.post("/regSelf",data.field, function (res){
+                    if (res.code == 200){
+                        layer.msg("注册成功，请登录...", {time:400},function (){
+                            top.location.href='/login';
                         });
-                        sessionStorage.setItem("userid", res.id);
-                    }else {
-                        layer.msg("用户名或密码错误！")
                     }
-                },"json");
+                    else {
+                        layer.msg(res.msg, {time:400},function (){
+                            top.location.href='/register';
+                        });
+                    }
+                })
                 return false;
             });
         });

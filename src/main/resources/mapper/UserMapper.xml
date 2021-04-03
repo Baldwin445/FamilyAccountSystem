@@ -5,10 +5,23 @@
 <mapper namespace="com.baldwin.dao.UserMapper">
 
     <select id="loginConfirm" resultType="com.baldwin.entity.User">
-        select * from user where acct = #{acct} and pwd = #{pwd}
+        SELECT * FROM user WHERE acct = #{acct} AND pwd = #{pwd}
     </select>
 
     <select id="getCurrentUserInfo" resultType="com.baldwin.entity.RoleInfo">
-        select * from roleinfo where roleid = #{roleid}
+        SELECT * FROM roleinfo WHERE roleid = #{roleid}
     </select>
+
+    <insert id="regUser" parameterType="com.baldwin.entity.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO user(id, roleid, homeid, acct, pwd)
+            VALUE (null, -1, -1, #{acct}, #{pwd})
+    </insert>
+
+    <select id="existUserCheck" resultType="int">
+        SELECT count(1) FROM user WHERE acct = #{acct}
+    </select>
+
+    <insert id="setUserPermission" parameterType="int">
+        INSERT INTO permission VALUE (#{userid}, #{access})
+    </insert>
 </mapper>
