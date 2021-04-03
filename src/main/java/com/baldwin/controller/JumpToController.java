@@ -28,6 +28,6 @@ public class JumpToController {
 
     @RequestMapping("/test")
     public String toTestPage() {
-        return "/details/add";
+        return "/sys/home";
     }
 }

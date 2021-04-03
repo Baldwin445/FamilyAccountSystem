@@ -1,12 +1,14 @@
 package com.baldwin.service.impl;
 
 import com.baldwin.dao.UserMapper;
+import com.baldwin.entity.Home;
 import com.baldwin.entity.RoleInfo;
 import com.baldwin.entity.User;
 import com.baldwin.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @ClassName: UserServiceImpl
@@ -45,5 +47,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public int setUserPermission(User user, int access){
         return mapper.setUserPermission(user.getId(), access);
+    }
+
+    @Override
+    public List<Home> getAllHome() {
+        return mapper.getAllHome();
     }
 }

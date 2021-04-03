@@ -1,5 +1,6 @@
 package com.baldwin.controller;
 
+import com.baldwin.entity.Home;
 import com.baldwin.entity.Menu;
 import com.baldwin.entity.RoleInfo;
 import com.baldwin.entity.User;
@@ -10,6 +11,7 @@ import com.baldwin.utils.UserUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -59,7 +61,7 @@ public class UserController {
     * */
     @RequestMapping("/login.check")
     @ResponseBody
-    public User login(HttpServletRequest request, String acct, String pwd){
+    public Result login(HttpServletRequest request, String acct, String pwd){
         LogUtil.log("ACCT", acct);
         LogUtil.log("PWD", pwd);
 
@@ -67,7 +69,7 @@ public class UserController {
         request.getSession().setAttribute(UserUtil.CURRENT_USER, user);
         request.getSession().setAttribute(UserUtil.CURRENT_USERID, user.getId());
 
-        return user;
+        return ResultUtil.success(user);
     }
 
     /**
@@ -106,7 +108,7 @@ public class UserController {
         return "index";
     }
 
-    /*
+    /**
     * Use for test the jump to the page
     * HELLO.html            : using @ResponseBody
     * Just a "HELLO" word   : without using @ResponseBody
@@ -120,6 +122,17 @@ public class UserController {
 //        m.addAttribute("name", "TEST!");
         return mav;
     }
+
+    /**
+     * get the POST then return the Data of Home Info
+     * 接受请求返回家庭信息，用于管理员
+     */
+    @RequestMapping(value = "/getAllHome",method = RequestMethod.POST)
+    public String getAllHome(Model m){
+        m.addAttribute("homelist", userService.getAllHome());
+        return "/sys/home::hometable";
+    }
+
 
     /**
      * Using by UserID to find the MENUS and put it in Session

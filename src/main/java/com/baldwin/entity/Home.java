@@ -4,8 +4,10 @@ public class Home {
     private int id;
     private int onwerId;
     private int member;
-    private int acctNum;
+    private int acctnum;
     private String address;
+    private String nickname;    //the nickname of host
+    private String realname;    //the realname of host
 
     @Override
     public String toString() {
@@ -13,9 +15,27 @@ public class Home {
                 "id=" + id +
                 ", onwerId=" + onwerId +
                 ", member=" + member +
-                ", acctNum=" + acctNum +
+                ", acctnum=" + acctnum +
                 ", address='" + address + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", realname='" + realname + '\'' +
                 '}';
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getRealname() {
+        return realname;
+    }
+
+    public void setRealname(String realname) {
+        this.realname = realname;
     }
 
     public int getId() {
@@ -42,12 +62,12 @@ public class Home {
         this.member = member;
     }
 
-    public int getAcctNum() {
-        return acctNum;
+    public int getAcctnum() {
+        return acctnum;
     }
 
-    public void setAcctNum(int acctNum) {
-        this.acctNum = acctNum;
+    public void setAcctnum(int acctnum) {
+        this.acctnum = acctnum;
     }
 
     public String getAddress() {

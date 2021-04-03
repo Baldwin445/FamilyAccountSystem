@@ -1,8 +1,11 @@
 package com.baldwin.dao;
 
+import com.baldwin.entity.Home;
 import com.baldwin.entity.RoleInfo;
 import com.baldwin.entity.User;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface UserMapper {
@@ -15,4 +18,6 @@ public interface UserMapper {
     int existUserCheck(String acct);
 
     int setUserPermission(int userid, int access);
+
+    List<Home> getAllHome();
 }

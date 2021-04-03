@@ -14,7 +14,7 @@
 
     <insert id="regUser" parameterType="com.baldwin.entity.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO user(id, roleid, homeid, acct, pwd)
-            VALUE (null, -1, -1, #{acct}, #{pwd})
+            VALUE (null, null, null, #{acct}, #{pwd})
     </insert>
 
     <select id="existUserCheck" resultType="int">
@@ -24,4 +24,12 @@
     <insert id="setUserPermission" parameterType="int">
         INSERT INTO permission VALUE (#{userid}, #{access})
     </insert>
+
+    <select id="getAllHome" resultType="com.baldwin.entity.Home">
+        SELECT h.id, h.ownerid, h.member, h.acctnum, h.address, r.nickname, r.realname
+        FROM (home AS h LEFT JOIN user ON h.ownerid = user.id)
+                 LEFT JOIN roleinfo AS r ON user.roleid = r.roleid
+        UNION
+        SELECT *,NULL,NULL FROM home WHERE acctnum = 0
+    </select>
 </mapper>

@@ -48,11 +48,11 @@
             var form = layui.form;
             form.on('submit(login)', function(data){
                 $.post("/login.check",data.field,function(res){
-                    if(res.id == 1){
+                    if(res.code == 200){
                         layer.msg("登录成功，正在跳转...",{time:400},function () {
                             top.location.href='/pages/index';
                         });
-                        sessionStorage.setItem("userid", res.id);
+                        sessionStorage.setItem("userid", res.data.id);
                     }else {
                         layer.msg("用户名或密码错误！")
                     }

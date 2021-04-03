@@ -1,10 +1,104 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>家庭信息</title>
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet"/>
+    <script th:src="@{/lib/layui/layui.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
 </head>
+
 <body>
 
+<div class="x-body">
+    <div class="layui-row">
+        <div class="layui-card-body">
+            <form class="layui-form layui-col-md12 x-so" >
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input type="text" placeholder="家庭ID" id="homeid" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input type="text" placeholder="户主名称" id="hostname" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <button class="layui-btn" type="button" lay-submit="" lay-filter="search" onclick="">
+                    <i class="layui-icon">&#xe615;</i>搜索
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="layui-card-body">
+        <xblock>
+            <button class="layui-btn" onclick=""><i class="layui-icon"></i>添加
+            </button>
+            <span class="x-right" style="line-height:40px">共有数据：<span id="num"></span> 条</span>
+        </xblock>
+        <div id="hometable" th:fragment="hometable">
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th style="width: 5%;">序号</th>
+                    <th style="width: 10%;">家庭编号</th>
+                    <th style="width: 10%;">户主昵称</th>
+                    <th style="width: 10%;">户主原名</th>
+                    <th style="width: 10%;">用户数</th>
+                    <th style="width: 15%;">地址</th>
+                    <th style="width: 5%;"></th>
+                </thead>
+                <tbody>
+                <tr th:each="h:${homelist}">
+                    <td th:text="${h.id}"></td>
+                    <td th:text="${h.id}"></td>
+                    <td th:text="${h.nickname}"></td>
+                    <td th:text="${h.realname}"></td>
+                    <td th:text="${h.acctnum}"></td>
+                    <td th:text="${h.address}"></td>
+                    <td class="td-manage">
+                        <a title="编辑" onclick="" href="javascript:;">
+                            <i class="layui-icon">&#xe642;</i>
+                        </a>
+                        <a title="删除" onclick="" href="javascript:;">
+                            <i class="layui-icon">&#xe640;</i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div id="pager" style="text-align: center;"></div>
+
+</div>
 </body>
+<script>
+    layui.use('table',function (){
+        var table = layui.table
+
+        //init the table datas
+        initTable(table);
+
+    })
+
+    function initTable(table){
+        var url = '/getAllHome';
+        var dataJson = eval($("#hometable").val());
+        $.ajax({
+            url: url,
+            type: 'POST',
+            success: function(data){
+                console.log(data);
+                $("#hometable").html(data);
+                table.render();
+            }
+        });
+    }
+</script>
+
 </html>
