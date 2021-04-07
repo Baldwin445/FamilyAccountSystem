@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baldwin.dao.HomeMapper">
+
+    <select id="getAllHome" resultType="com.baldwin.entity.Home">
+        SELECT h.id, h.ownerid, h.member, h.acctnum, h.address, r.nickname, r.realname
+        FROM (home AS h LEFT JOIN user ON h.ownerid = user.id)
+                 LEFT JOIN roleinfo AS r ON user.roleid = r.roleid
+        UNION
+        SELECT *,NULL,NULL FROM home WHERE acctnum = 0
+    </select>
+
+    <select id="getHomeByID_Hostname" resultType="com.baldwin.entity.Home">
+        SELECT * FROM
+        (SELECT h.id, h.ownerid, h.member, h.acctnum, h.address, r.nickname, r.realname
+        FROM (home AS h LEFT JOIN user ON h.ownerid = user.id)
+        LEFT JOIN roleinfo AS r ON user.roleid = r.roleid
+        UNION
+        SELECT *,NULL,NULL FROM home WHERE acctnum = 0) AS result
+        <where>
+            <if test="hostname!=null">OR nickname = #{hostname}</if>
+            <if test="hostname!=null">OR realname = #{hostname}</if>
+            <if test="homeid!=null">AND id = #{homeid}</if>
+        </where>
+        LIMIT #{begin}, #{num}
+    </select>
+
+    <select id="countAllHome" resultType="int">
+        SELECT count(1) FROM home
+    </select>
+
+    <select id="getAllHomePage" resultType="com.baldwin.entity.Home">
+        SELECT * FROM
+        (SELECT h.id, h.ownerid, h.member, h.acctnum, h.address, r.nickname, r.realname
+        FROM (home AS h LEFT JOIN user ON h.ownerid = user.id)
+                 LEFT JOIN roleinfo AS r ON user.roleid = r.roleid
+        UNION
+        SELECT *,NULL,NULL FROM home WHERE acctnum = 0) AS result
+        LIMIT #{begin}, #{num}
+    </select>
+
+</mapper>

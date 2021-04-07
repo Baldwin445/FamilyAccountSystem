@@ -17,6 +17,5 @@ public interface UserService {
 
     int setUserPermission(User user, int access);
 
-    List<Home> getAllHome();
 
 }

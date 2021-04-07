@@ -8,6 +8,7 @@ public class Home {
     private String address;
     private String nickname;    //the nickname of host
     private String realname;    //the realname of host
+    private int count;          //the amount of info
 
     @Override
     public String toString() {
@@ -19,7 +20,16 @@ public class Home {
                 ", address='" + address + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", realname='" + realname + '\'' +
+                ", count=" + count +
                 '}';
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public String getNickname() {

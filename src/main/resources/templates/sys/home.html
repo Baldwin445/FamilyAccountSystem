@@ -5,7 +5,14 @@
     <title>家庭信息</title>
     <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet"/>
     <script th:src="@{/lib/layui/layui.js}"></script>
+    <script th:src="@{/lib/layui/layui.all.js}"></script>
     <script type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
+    <style type="text/css">
+        .layui-table th{
+            /*表头内容居中显示*/
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -16,12 +23,12 @@
             <form class="layui-form layui-col-md12 x-so" >
                 <div class="layui-inline">
                     <div class="layui-input-inline">
-                        <input type="text" placeholder="家庭ID" id="homeid" autocomplete="off" class="layui-input">
+                        <input type="text" placeholder="家庭ID" name="homeid" class="layui-input" id="homeid">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <div class="layui-input-inline">
-                        <input type="text" placeholder="户主名称" id="hostname" autocomplete="off" class="layui-input">
+                        <input type="text" placeholder="户主名称" name="hostname" class="layui-input" id="hostname">
                     </div>
                 </div>
                 <button class="layui-btn" type="button" lay-submit="" lay-filter="search" onclick="">
@@ -29,6 +36,16 @@
                 </button>
 
             </form>
+<!--            <div class="layui-input-inline">-->
+<!--                <input type="text" placeholder="家庭ID" name="homeid" class="layui-input" id="homeid">-->
+<!--            </div>-->
+<!--            <div class="layui-input-inline">-->
+<!--                <input type="text" placeholder="户主名称" name="hostname" class="layui-input" id="hostname">-->
+<!--            </div>-->
+<!--            <button class="layui-btn" type="button" lay-submit="" lay-filter="search" data-type="reload">-->
+<!--                <i class="layui-icon">&#xe615;</i>搜索-->
+<!--            </button>-->
+
         </div>
     </div>
 
@@ -38,67 +55,75 @@
             </button>
             <span class="x-right" style="line-height:40px">共有数据：<span id="num"></span> 条</span>
         </xblock>
-        <div id="hometable" th:fragment="hometable">
-            <table class="layui-table">
-                <thead>
-                <tr>
-                    <th style="width: 5%;">序号</th>
-                    <th style="width: 10%;">家庭编号</th>
-                    <th style="width: 10%;">户主昵称</th>
-                    <th style="width: 10%;">户主原名</th>
-                    <th style="width: 10%;">用户数</th>
-                    <th style="width: 15%;">地址</th>
-                    <th style="width: 5%;"></th>
-                </thead>
-                <tbody>
-                <tr th:each="h:${homelist}">
-                    <td th:text="${h.id}"></td>
-                    <td th:text="${h.id}"></td>
-                    <td th:text="${h.nickname}"></td>
-                    <td th:text="${h.realname}"></td>
-                    <td th:text="${h.acctnum}"></td>
-                    <td th:text="${h.address}"></td>
-                    <td class="td-manage">
-                        <a title="编辑" onclick="" href="javascript:;">
-                            <i class="layui-icon">&#xe642;</i>
-                        </a>
-                        <a title="删除" onclick="" href="javascript:;">
-                            <i class="layui-icon">&#xe640;</i>
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <table id="hometable" lay-filter="hometable"></table>
         </div>
-
     </div>
 
     <div id="pager" style="text-align: center;"></div>
 
 </div>
 </body>
+
 <script>
-    layui.use('table',function (){
+    layui.use(['table','form'],function (){
         var table = layui.table
+        var form = layui.form
 
         //init the table datas
-        initTable(table);
+        table.render({
+            elem: '#hometable',
+            url: '/getAllHomeJson',
+            method: 'post',
+            cols:[
+                [   //标题栏
+                    {field: 'index', title: '序号', width: '5%', sort:true},
+                    {field: 'id', title: '家庭编号', width: '10%'},
+                    {field: 'nickname', title: '户主昵称', width: '17.5%'},
+                    {field: 'realname', title: '户主原名', width: '17.5%'},
+                    {field: 'acctnum', title: '用户数', width: '15%'},
+                    {field: 'address', title: '地址', width: '25%'},
+                    {fixed: 'right', align:'center', width: '10%', toolbar: '#barDemo'}
+                ]
+            ],
+            page: true,
+            limits: [10, 20, 30],
+            limit: 10,
+            id: 'tableReload'
+        })
 
+        //listen to the search form submit
+        form.on('submit(search)', function (data){
+            console.log(data.field)
+            table.reload('tableReload',{
+                url: '/getHomeSearch',
+                page:{
+                    curr:1
+
+                },
+                where:{
+                    homeid: data.field.homeid,
+                    hostname: data.field.hostname,
+                },
+            })
+        })
+
+        //listen to table tool
+        table.on('tool(hometable)', function (obj) {
+            var data = obj.data;
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                })
+            }else if(obj.event === 'edit'){
+                layer.alert('编辑行：<br>'+ JSON.stringify(data))
+            }
+        })
     })
 
-    function initTable(table){
-        var url = '/getAllHome';
-        var dataJson = eval($("#hometable").val());
-        $.ajax({
-            url: url,
-            type: 'POST',
-            success: function(data){
-                console.log(data);
-                $("#hometable").html(data);
-                table.render();
-            }
-        });
-    }
 </script>
-
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
 </html>

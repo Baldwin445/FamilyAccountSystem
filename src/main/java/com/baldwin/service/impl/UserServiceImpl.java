@@ -49,8 +49,5 @@ public class UserServiceImpl implements UserService {
         return mapper.setUserPermission(user.getId(), access);
     }
 
-    @Override
-    public List<Home> getAllHome() {
-        return mapper.getAllHome();
-    }
+
 }

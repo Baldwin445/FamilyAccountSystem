@@ -10,9 +10,7 @@ import com.baldwin.utils.*;
 import com.baldwin.utils.UserUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -122,17 +120,6 @@ public class UserController {
 //        m.addAttribute("name", "TEST!");
         return mav;
     }
-
-    /**
-     * get the POST then return the Data of Home Info
-     * 接受请求返回家庭信息，用于管理员
-     */
-    @RequestMapping(value = "/getAllHome",method = RequestMethod.POST)
-    public String getAllHome(Model m){
-        m.addAttribute("homelist", userService.getAllHome());
-        return "/sys/home::hometable";
-    }
-
 
     /**
      * Using by UserID to find the MENUS and put it in Session
