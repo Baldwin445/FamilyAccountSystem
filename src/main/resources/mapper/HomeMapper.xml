@@ -41,4 +41,22 @@
         LIMIT #{begin}, #{num}
     </select>
 
+    <update id="modifyAddress">
+        UPDATE home SET address = #{address} WHERE id = #{homeid}
+    </update>
+
+    <delete id="deleteHome">
+        DELETE FROM home WHERE id = #{homeid}
+    </delete>
+
+    <insert id="addHomeAddress" parameterType="com.baldwin.entity.Home" useGeneratedKeys="true" keyProperty="id">
+        insert into home(id,ownerid,acctnum,address)
+            value (null, null, 0, #{address})
+    </insert>
+
+    <insert id="addHomeAddressAcct" parameterType="com.baldwin.entity.Home" useGeneratedKeys="true" keyProperty="id">
+        insert into home(id,ownerid,acctnum,address)
+            value (null, #{ownerId}, 1, #{address})
+    </insert>
+
 </mapper>

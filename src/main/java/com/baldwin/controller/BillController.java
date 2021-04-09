@@ -34,7 +34,7 @@ public class BillController {
     @RequestMapping(value = "/addBill/{type}",method = RequestMethod.POST)
     @ResponseBody
     public Result addPayBill(@PathVariable String type, Bill bill, HttpSession session){
-        //check
+        //check the type
         int typeid = type.equals("pay")? 1:(type.equals("income")?2:0);
         if(typeid == 0)
             return ResultUtil.unSuccess("获取账单类型失败，请重新提交");
@@ -45,9 +45,6 @@ public class BillController {
         bill.setUserid(userid);
         bill.setTypeid(typeid);
         bill.setTagid(tagid);
-
-        LogUtil.log("TypeID",typeid);
-        LogUtil.log(bill);
 
         int result;
         if(typeid == 1) result = billService.addPayBill(bill);

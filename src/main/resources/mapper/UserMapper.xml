@@ -18,12 +18,17 @@
     </insert>
 
     <select id="existUserCheck" resultType="int">
-        SELECT count(1) FROM user WHERE acct = #{acct}
+        SELECT id FROM user WHERE acct = #{acct}
     </select>
 
     <insert id="setUserPermission" parameterType="int">
         INSERT INTO permission VALUE (#{userid}, #{access})
     </insert>
+
+    <update id="setHomeIDbyAcct">
+        UPDATE user SET homeid = #{homeid} WHERE acct = #{acct}
+    </update>
+
 
 
 </mapper>

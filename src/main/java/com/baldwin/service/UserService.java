@@ -17,5 +17,6 @@ public interface UserService {
 
     int setUserPermission(User user, int access);
 
+    int setHomeIDbyAcct(String acct, int homeid);
 
 }

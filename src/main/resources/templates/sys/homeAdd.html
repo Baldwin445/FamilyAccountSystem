@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>添加家庭信息</title>
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet"/>
+    <script th:src="@{/lib/layui/layui.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
+    <style>
+        .layui-form {
+            padding: 30px 30px;
+        }
+    </style>
+</head>
+<body>
+<form class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+        <label class="layui-form-label">家庭地址</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" name="address" lay-verify="required" placeholder="请输入地址">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">添加户主</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" name="ownerAcct" placeholder="请输入用户名(非昵称/选填)">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <input class="layui-btn" value="添加" lay-submit lay-filter="home_add" style="width:100%;" type="submit">
+    </div>
+</form>
+</body>
+<script>
+    layui.use(['form','layer'], function () {
+        var form = layui.form,
+            layer = layui.layer
+
+        form.on('submit(home_add)', function (data) {
+            layer.confirm("确认添加？", {title: false, closeBtn: false, skin: 'layui-layer-molv'}, function (layno) {
+                layer.close(layno);
+                $.post("/addHome", data.field, function (res) {
+                    if (res.code == 200) {
+                        layer.msg(res.msg, {time: 600}, function () {
+                            parent.layer.closeAll();
+                        });
+                    } else {
+                        layer.msg(res.msg);
+                        parent.layer.closeAll();
+                    }
+                });
+            });
+            return false;   //防止form的action提交
+        } )
+    })
+
+</script>
+</html>

@@ -38,4 +38,36 @@ public class HomeServiceImpl implements HomeService {
     public List<Home> getAllHomePage(int begin, int num) {
         return mapper.getAllHomePage(begin, num);
     }
+
+    /**
+     *  return the rows affected
+     */
+    @Override
+    public int modifyAddress(String homeid, String address) {
+        int result = mapper.modifyAddress(homeid, address);
+        if(result > 0) return result;
+        else return -1;
+    }
+    /**
+     *  return the rows affected
+     */
+    @Override
+    public int deleteHome(String homeid) {
+        int result = mapper.deleteHome(homeid);
+        if(result > 0) return result;
+        else
+            return -1;
+    }
+
+    @Override
+    public int addHomeAddress(Home home) {
+        return mapper.addHomeAddress(home);
+    }
+
+    @Override
+    public int addHomeAddressAcct(Home home) {
+        return mapper.addHomeAddressAcct(home);
+    }
+
+
 }

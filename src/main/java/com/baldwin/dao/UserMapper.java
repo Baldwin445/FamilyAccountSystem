@@ -19,7 +19,5 @@ public interface UserMapper {
 
     int setUserPermission(int userid, int access);
 
-    List<Home> getAllHome();
-
-    List<Home> getHomeByID_Hostname(String homeid, String hostname);
+    int setHomeIDbyAcct(String acct, int homeid);
 }

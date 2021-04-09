@@ -12,6 +12,10 @@
             /*表头内容居中显示*/
             text-align: center;
         }
+        textarea{
+            outline:none;
+            resize:none
+        }
     </style>
 </head>
 
@@ -36,38 +40,29 @@
                 </button>
 
             </form>
-<!--            <div class="layui-input-inline">-->
-<!--                <input type="text" placeholder="家庭ID" name="homeid" class="layui-input" id="homeid">-->
-<!--            </div>-->
-<!--            <div class="layui-input-inline">-->
-<!--                <input type="text" placeholder="户主名称" name="hostname" class="layui-input" id="hostname">-->
-<!--            </div>-->
-<!--            <button class="layui-btn" type="button" lay-submit="" lay-filter="search" data-type="reload">-->
-<!--                <i class="layui-icon">&#xe615;</i>搜索-->
-<!--            </button>-->
 
         </div>
     </div>
 
     <div class="layui-card-body">
         <xblock>
-            <button class="layui-btn" onclick=""><i class="layui-icon"></i>添加
-            </button>
+            <button class="layui-btn" id="add"><i class="layui-icon"></i>添加</button>
             <span class="x-right" style="line-height:40px">共有数据：<span id="num"></span> 条</span>
         </xblock>
-            <table id="hometable" lay-filter="hometable"></table>
-        </div>
+        <table id="hometable" lay-filter="hometable"></table>
+        <span class="x-right" style="line-height:40px; color:rgba(0,0,0,0.6)">此处仅能修改家庭地址信息。</span>
     </div>
 
-    <div id="pager" style="text-align: center;"></div>
+
 
 </div>
 </body>
 
 <script>
-    layui.use(['table','form'],function (){
-        var table = layui.table
-        var form = layui.form
+    layui.use(['table','form', 'layer'],function (){
+        var table = layui.table,
+            form = layui.form,
+            layer = layui.layer
 
         //init the table datas
         table.render({
@@ -76,19 +71,21 @@
             method: 'post',
             cols:[
                 [   //标题栏
-                    {field: 'index', title: '序号', width: '5%', sort:true},
-                    {field: 'id', title: '家庭编号', width: '10%'},
+                    {field: 'id', title: '家庭编号', width: '10%', sort:true},
                     {field: 'nickname', title: '户主昵称', width: '17.5%'},
                     {field: 'realname', title: '户主原名', width: '17.5%'},
                     {field: 'acctnum', title: '用户数', width: '15%'},
-                    {field: 'address', title: '地址', width: '25%'},
+                    {field: 'address', title: '地址', width: '30%'},
                     {fixed: 'right', align:'center', width: '10%', toolbar: '#barDemo'}
                 ]
             ],
             page: true,
             limits: [10, 20, 30],
             limit: 10,
-            id: 'tableReload'
+            id: 'tableReload',
+            done: function (res){
+                $('#num').text(res.count);
+            }
         })
 
         //listen to the search form submit
@@ -98,13 +95,16 @@
                 url: '/getHomeSearch',
                 page:{
                     curr:1
-
                 },
                 where:{
                     homeid: data.field.homeid,
                     hostname: data.field.hostname,
                 },
+                done: function (res) {    //check layui DONE document
+                    $('#num').text(res.count);
+                }
             })
+
         })
 
         //listen to table tool
@@ -112,12 +112,71 @@
             var data = obj.data;
             if(obj.event === 'del'){
                 layer.confirm('真的删除行么', function(index){
-                    obj.del();
+                    /** DELETE post **/
+                    var url = '/delHome/'+data.id;
+                    console.log(url);
+                    $.post(url, function (res) {
+                        if(res.code == 200){
+                            layer.msg(res.msg,{time:400},function () {
+                                obj.del();
+                            });
+                        }else {
+                            layer.msg(res.msg)
+                        }
+                    })
                     layer.close(index);
                 })
             }else if(obj.event === 'edit'){
-                layer.alert('编辑行：<br>'+ JSON.stringify(data))
+                /** EDIT post **/
+                layer.open({
+                    id:1,
+                    type: 1,
+                    title:'请输入需要修改的地址信息',
+                    style: 'width:80%;height:auto;',
+                    content: "<div style='display:flex;justify-content:center;'><textarea id='area' class=\"layui-input\" style='width:100%;height:85px;padding-top:10px'></textarea></div>",
+                    btn:['保存','取消'],
+                    yes:function (index,layero) {
+                        //获取输入框里面的值
+                        var closeContent = top.$("#area").val() || $("#area").val();
+                        if(closeContent){
+                            console.log(closeContent);
+                        }
+                        layer.close(index);
+                        // 在这里提交数据
+                        var url = '/modifyHome/'+data.id+'/'+closeContent;
+                        console.log(url);
+                        $.post(url, function (res) {
+                            if(res.code == 200){
+                                layer.msg(res.msg,{time:400},function () {
+                                   obj.update({
+                                       address: closeContent
+                                   })
+                                });
+                            }else {
+                                layer.msg(res.msg)
+                            }
+                        })
+                    },
+                    no:function (index,layero) {
+                        layer.close(index);
+                    }
+                });
             }
+        })
+
+        //listen to Add button
+        $("#add").click(function () {
+            var url = 'sys_homeAdd.html';
+            layer.open({
+                type: 2,
+                area: ['500px', '40%'],
+                fix: false, //不固定
+                maxmin: true,
+                shadeClose: false,
+                shade:0.4,
+                title: '添加家庭信息',
+                content: [url, 'no']
+            });
         })
     })
 

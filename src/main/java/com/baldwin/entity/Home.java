@@ -2,7 +2,8 @@ package com.baldwin.entity;
 
 public class Home {
     private int id;
-    private int onwerId;
+    private int ownerId;
+    private String ownerAcct;
     private int member;
     private int acctnum;
     private String address;
@@ -14,7 +15,8 @@ public class Home {
     public String toString() {
         return "Home{" +
                 "id=" + id +
-                ", onwerId=" + onwerId +
+                ", ownerId=" + ownerId +
+                ", ownerAcct='" + ownerAcct + '\'' +
                 ", member=" + member +
                 ", acctnum=" + acctnum +
                 ", address='" + address + '\'' +
@@ -22,6 +24,14 @@ public class Home {
                 ", realname='" + realname + '\'' +
                 ", count=" + count +
                 '}';
+    }
+
+    public String getOwnerAcct() {
+        return ownerAcct;
+    }
+
+    public void setOwnerAcct(String ownerAcct) {
+        this.ownerAcct = ownerAcct;
     }
 
     public int getCount() {
@@ -56,12 +66,12 @@ public class Home {
         this.id = id;
     }
 
-    public int getOnwerId() {
-        return onwerId;
+    public int getOwnerId() {
+        return ownerId;
     }
 
-    public void setOnwerId(int onwerId) {
-        this.onwerId = onwerId;
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
     }
 
     public int getMember() {

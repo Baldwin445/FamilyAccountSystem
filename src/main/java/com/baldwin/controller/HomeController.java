@@ -4,13 +4,12 @@ import com.baldwin.entity.Home;
 import com.baldwin.service.HomeService;
 import com.baldwin.service.UserService;
 import com.baldwin.utils.LogUtil;
+import com.baldwin.utils.Result;
+import com.baldwin.utils.ResultUtil;
 import net.sf.json.JSONArray;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.rmi.CORBA.Util;
@@ -32,7 +31,7 @@ public class HomeController {
 
     @RequestMapping("/getAllHomeJson")
     @ResponseBody
-    public String getAllHomeJson(int page, int limit){
+    public String getAllHomeJson(int page, int limit, Model m){
         int begin = limit * (page - 1);
         int num = page * limit;
         //get the range of the List
@@ -81,7 +80,7 @@ public class HomeController {
 
         //when it needs to get All home
         //it needs a Right count of info
-        if(hostname == null && hostname == null)
+        if(homeid == null && hostname == null)
             count = homeService.countAllHome();
         else
             count = homeList.size();
@@ -91,6 +90,53 @@ public class HomeController {
 
         String jso = "{\"code\":0,\"msg\":\"\",\"count\":"+count+",\"data\":"+js+"}";
         return jso;
+    }
+
+    /**
+     * get the Modify Home Address Data Post
+     * @param homeid homeid
+     * @param address home address
+     * @return
+     */
+    @RequestMapping(value = "/modifyHome/{homeid}/{address}")
+    @ResponseBody
+    public Result modifyAddress(@PathVariable String homeid, @PathVariable String address){
+        int result = homeService.modifyAddress(homeid, address);
+        if(result == -1) return ResultUtil.unSuccess();
+        else return ResultUtil.success();
+    }
+
+    @RequestMapping(value = "/delHome/{homeid}")
+    @ResponseBody
+    public Result deleteHome(@PathVariable String homeid){
+        int result = homeService.deleteHome(homeid);
+        if(result == -1) return ResultUtil.unSuccess();
+        else return ResultUtil.success();
+    }
+
+
+    /**
+     *
+     * @param home
+     * @return
+     * @Bug 注意不能添加已有家庭编号的用户
+     */
+    @RequestMapping(value = "/addHome")
+    @ResponseBody
+    public Result addHome(Home home){
+        if(home.getOwnerAcct().equals("")){
+            homeService.addHomeAddress(home);
+            return ResultUtil.success();
+        }
+        int id = userService.existUserCheck(home.getOwnerAcct());
+        if(id > 0){
+            home.setOwnerId(id);
+            homeService.addHomeAddressAcct(home);
+            userService.setHomeIDbyAcct(home.getOwnerAcct(), home.getId());
+            return ResultUtil.success("添加户主信息成功");
+        }
+        else return ResultUtil.unSuccess("不存在此用户");
+
     }
 
 }

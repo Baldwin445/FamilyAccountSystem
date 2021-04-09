@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @return return the count of the same acct name
+     * @return return the id of the Acct User
      */
     @Override
     public int existUserCheck(String acct) {
@@ -47,6 +47,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public int setUserPermission(User user, int access){
         return mapper.setUserPermission(user.getId(), access);
+    }
+
+    @Override
+    public int setHomeIDbyAcct(String acct, int homeid) {
+        return mapper.setHomeIDbyAcct(acct, homeid);
     }
 
 
