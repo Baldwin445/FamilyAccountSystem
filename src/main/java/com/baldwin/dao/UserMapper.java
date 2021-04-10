@@ -30,4 +30,6 @@ public interface UserMapper {
     int deleteAccess(int userid);
 
     User getUserByID(int userid);
+
+    int updateRoleInfo(RoleInfo roleInfo);
 }

@@ -38,7 +38,7 @@ public class UserUtil {
         JSONArray jsonArray = new JSONArray();
 
         for(User l: list){
-            JSONObject json = new JSONObject(), jsonAdd = new JSONObject();
+            JSONObject json, jsonAdd;
             json = JSONObject.fromObject(l);
             if(l.getRoleInfo() != null){
                 jsonAdd = JSONObject.fromObject(l.getRoleInfo());

@@ -70,4 +70,16 @@
         SELECT * FROM user WHERE id = #{userid}
     </select>
 
+    <update id="updateRoleInfo" parameterType="com.baldwin.entity.RoleInfo">
+        UPDATE roleinfo
+        <set>
+            <if test="nickname != null and nickname !=''">username = #{username},</if>
+            <if test="realname != null and realname !=''">realname = #{realname},</if>
+            <if test="relation != null and relation !=''">relation = #{relation},</if>
+            <if test="tel != null and tel !=''">tel = #{tel},</if>
+            <if test="email != null and email !=''">email = #{email},</if>
+        </set>
+        WHERE roleid = #{roleId}
+    </update>
+
 </mapper>

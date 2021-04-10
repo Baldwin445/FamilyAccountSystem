@@ -171,4 +171,14 @@ public class UserController {
             return ResultUtil.unSuccess();
     }
 
+    @RequestMapping("/updateRoleInfo/{roleid}")
+    @ResponseBody
+    public Result updateUserInfoNoHomeID(@PathVariable String roleid, HttpServletRequest request, RoleInfo roleInfo){
+        roleInfo.setRoleId(Integer.valueOf(roleid));
+        int result = userService.updateRoleInfo(roleInfo);
+        if(result == 1) return ResultUtil.success();
+        else if(result == 0) return ResultUtil.unSuccess();
+        else return ResultUtil.unSuccess("修改成功但数据异常");
+    }
+
 }

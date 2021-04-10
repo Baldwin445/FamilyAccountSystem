@@ -86,14 +86,22 @@ public class UserServiceImpl implements UserService {
             if(user.getAccess().getAccess() == 3)
                 homeMapper.updateHomeHost(homeid, -1);
         }
-
         //delete the access and acct info
         //删除账户信息和权限信息
         mapper.deleteAccess(userid);
         mapper.deleteUser(userid);
 
-
         return 1;
+    }
+
+    @Override
+    public int updateRoleInfo(RoleInfo roleInfo) {
+        return mapper.updateRoleInfo(roleInfo);
+    }
+
+    @Override
+    public User getUserByID(int userid) {
+        return mapper.getUserByID(userid);
     }
 
 

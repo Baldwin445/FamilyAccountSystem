@@ -1,10 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet"/>
+    <script th:src="@{/lib/layui/layui.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
+    <style>
+        .layui-form {
+            padding: 30px 30px;
+        }
+    </style>
 </head>
 <body>
+<form class="layui-form layui-form-pane">
+    <span class="x-right" style="line-height:40px">正在修改用户编号：<span th:text="${roleid}" id="roleid"></span></span>
+    <div class="layui-form-item">
+        <label class="layui-form-label">昵称</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" name="nickname" placeholder="请输入昵称">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">实名</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" name="realname" placeholder="请输入实名">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">家庭关系</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" name="relation" placeholder="请输入家庭地位">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">电话</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="tel" name="tel" placeholder="请输入电话">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">邮箱</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="email" name="email" placeholder="请输入邮箱">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <input class="layui-btn" value="修改" lay-submit lay-filter="modify" style="width:100%;" type="submit">
+    </div>
+</form>
 
 </body>
+<script>
+    layui.use(['form','layer'], function () {
+        var form = layui.form,
+            layer = layui.layer
+
+        form.on('submit(modify)', function (data) {
+            layer.confirm("确认修改？", {title: false, closeBtn: false, skin: 'layui-layer-molv'}, function (layno) {
+                layer.close(layno);
+                console.log(data.field)
+                var url = "/updateRoleInfo/"+ $("#roleid").text();
+                $.post(url, data.field, function (res) {
+
+                    if (res.code == 200) {
+                        layer.msg(res.msg, {time: 600}, function () {
+                            window.parent.location.reload();
+                            parent.layer.closeAll();
+                        });
+                    } else {
+                        layer.msg(res.msg);
+                        parent.layer.closeAll();
+                    }
+                });
+            });
+            return false;   //防止form的action提交
+        } )
+    })
+</script>
+
 </html>

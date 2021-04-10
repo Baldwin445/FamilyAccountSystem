@@ -5,7 +5,7 @@ public class RoleInfo {
     private String relation;
     private String nickname;
     private String realname;
-    private int tel;
+    private String tel;
     private String email;
 
     @Override
@@ -52,11 +52,11 @@ public class RoleInfo {
         this.realname = realname;
     }
 
-    public int getTel() {
+    public String getTel() {
         return tel;
     }
 
-    public void setTel(int tel) {
+    public void setTel(String tel) {
         this.tel = tel;
     }
 

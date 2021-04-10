@@ -1,8 +1,13 @@
 package com.baldwin.controller;
 
+import com.baldwin.entity.User;
+import com.baldwin.service.UserService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.annotation.Resource;
 
 /**
  * @ClassName: JumpToController
@@ -12,6 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class JumpToController {
+
+    @Resource
+    private UserService userService;
+
     /*
     * 接受/pages请求并将{page}部分处理返回
     * 实现无视/pages路径
@@ -29,5 +38,18 @@ public class JumpToController {
     @RequestMapping("/test")
     public String toTestPage() {
         return "/sys/home";
+    }
+
+    /**
+     * 专门跳转用于提交用户数据
+     * @param userid
+     * @return
+     */
+    @RequestMapping("/pages/sys/userEdit/{userid}")
+    public String toUpdateRoleInfo(@PathVariable String userid, Model m) {
+
+        User user = userService.getUserByID(Integer.valueOf(userid));
+        m.addAttribute("roleid", user.getRoleId());
+        return "/sys/userEdit";
     }
 }

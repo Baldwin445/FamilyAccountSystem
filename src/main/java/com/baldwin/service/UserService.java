@@ -25,4 +25,9 @@ public interface UserService {
 
     int clearUserByID(int userid);
 
+    int updateRoleInfo(RoleInfo roleInfo);
+
+    User getUserByID(int userid);
+
+
 }
