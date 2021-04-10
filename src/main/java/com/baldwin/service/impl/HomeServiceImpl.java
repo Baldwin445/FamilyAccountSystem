@@ -44,7 +44,7 @@ public class HomeServiceImpl implements HomeService {
      */
     @Override
     public int modifyAddress(String homeid, String address) {
-        int result = mapper.modifyAddress(homeid, address);
+        int result = mapper.updateHomeAddress(homeid, address);
         if(result > 0) return result;
         else return -1;
     }

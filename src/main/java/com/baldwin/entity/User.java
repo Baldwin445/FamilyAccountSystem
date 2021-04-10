@@ -7,6 +7,8 @@ public class User {
     private String acct;
     private String pwd;
     private String profile;
+    private RoleInfo roleInfo;
+    private Permission access;
 
     @Override
     public String toString() {
@@ -15,9 +17,27 @@ public class User {
                 ", roleId=" + roleId +
                 ", houseId=" + houseId +
                 ", acct='" + acct + '\'' +
-                ", password='" + pwd + '\'' +
+                ", pwd='" + pwd + '\'' +
                 ", profile='" + profile + '\'' +
+                ", roleInfo=" + roleInfo +
+                ", access=" + access +
                 '}';
+    }
+
+    public Permission getAccess() {
+        return access;
+    }
+
+    public void setAccess(Permission access) {
+        this.access = access;
+    }
+
+    public RoleInfo getRoleInfo() {
+        return roleInfo;
+    }
+
+    public void setRoleInfo(RoleInfo roleInfo) {
+        this.roleInfo = roleInfo;
     }
 
     public int getId() {

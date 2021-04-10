@@ -8,6 +8,7 @@ import com.baldwin.service.MenuService;
 import com.baldwin.service.UserService;
 import com.baldwin.utils.*;
 import com.baldwin.utils.UserUtil;
+import net.sf.json.JSONArray;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -136,6 +137,38 @@ public class UserController {
 //        LogUtil.log(menusNew);
 //        LogUtil.log(toolBar);
         return menusNew;
+    }
+
+    /**
+     *  get all user
+     * @param page  the table page num 每次请求表格页面
+     * @param limit the rows of every page 每页的行数
+     * @return  the json data 表格所需的json数据格式
+     */
+    @RequestMapping("/getAllUser")
+    @ResponseBody
+    public String getAllUser(int page, int limit){
+        int begin = limit * (page - 1);
+        int num = page * limit;
+        //get the range of the List
+        List<User> userList = userService.getAllUser(begin, num);
+        LogUtil.log(userList);
+        //put data into Json
+        String js = UserUtil.getUserJSON(userList);
+        LogUtil.log(js);
+
+        int count = userService.countAllUser();
+        String jso = "{\"code\":0,\"msg\":\"\",\"count\":"+count+",\"data\":"+js+"}";
+        return jso;
+    }
+
+    @RequestMapping("/delUser/{userid}")
+    @ResponseBody
+    public Result deleteUser(@PathVariable String userid){
+        if(userService.clearUserByID(Integer.valueOf(userid)) > 0)
+            return ResultUtil.success();
+        else
+            return ResultUtil.unSuccess();
     }
 
 }

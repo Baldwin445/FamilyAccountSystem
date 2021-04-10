@@ -19,4 +19,10 @@ public interface UserService {
 
     int setHomeIDbyAcct(String acct, int homeid);
 
+    List<User> getAllUser(int begin, int num);
+
+    int countAllUser();
+
+    int clearUserByID(int userid);
+
 }

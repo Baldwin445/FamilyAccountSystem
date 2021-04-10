@@ -20,4 +20,14 @@ public interface UserMapper {
     int setUserPermission(int userid, int access);
 
     int setHomeIDbyAcct(String acct, int homeid);
+
+    List<User> getAllUser(int begin, int num);
+
+    int countAllUser();
+
+    int deleteUser(int userid);
+
+    int deleteAccess(int userid);
+
+    User getUserByID(int userid);
 }

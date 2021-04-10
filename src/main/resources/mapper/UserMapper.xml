@@ -29,6 +29,45 @@
         UPDATE user SET homeid = #{homeid} WHERE acct = #{acct}
     </update>
 
+    <resultMap id="userInfoBean" type="com.baldwin.entity.User">
+        <result column="id" property="id"/>
+        <result column="homeid" property="houseId"/>
+        <result column="acct" property="acct"/>
+        <result column="pwd" property="pwd"/>
+        <association property="roleInfo" javaType="com.baldwin.entity.RoleInfo">
+            <result column="roleid" property="roleId"/>
+            <result column="relation" property="relation"/>
+            <result column="nickname" property="nickname"/>
+            <result column="realname" property="realname"/>
+            <result column="tel" property="tel"/>
+            <result column="email" property="email"/>
+        </association>
+        <association property="access" javaType="com.baldwin.entity.Permission">
+            <result column="access" property="access"/>
+        </association>
+    </resultMap>
 
+    <select id="getAllUser" resultMap="userInfoBean">
+        SELECT id, homeid, nickname, realname, relation, tel, email, access
+        FROM permission RIGHT JOIN (user AS u LEFT JOIN roleinfo AS r ON u.roleid = r.roleid)
+            ON u.id = permission.userid
+        ORDER BY id ASC LIMIT #{begin},#{num}
+    </select>
+
+    <select id="countAllUser" resultType="int">
+        SELECT count(1) FROM user
+    </select>
+
+    <delete id="deleteUser">
+        DELETE FROM user WHERE id = #{userid}
+    </delete>
+
+    <delete id="deleteAccess" >
+        DELETE FROM permission WHERE userid = #{userid}
+    </delete>
+
+    <select id="getUserByID" resultType="com.baldwin.entity.User">
+        SELECT * FROM user WHERE id = #{userid}
+    </select>
 
 </mapper>

@@ -41,7 +41,7 @@
         LIMIT #{begin}, #{num}
     </select>
 
-    <update id="modifyAddress">
+    <update id="updateHomeAddress">
         UPDATE home SET address = #{address} WHERE id = #{homeid}
     </update>
 
@@ -58,5 +58,13 @@
         insert into home(id,ownerid,acctnum,address)
             value (null, #{ownerId}, 1, #{address})
     </insert>
+
+    <update id="updateHomeMember">
+        UPDATE home SET acctnum = acctnum-1 WHERE id = #{homeid}
+    </update>
+
+    <update id="updateHomeHost">
+        UPDATE home SET ownerid = #{userid} WHERE id = #{homeid}
+    </update>
 
 </mapper>

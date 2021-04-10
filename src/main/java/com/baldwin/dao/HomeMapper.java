@@ -15,11 +15,16 @@ public interface HomeMapper {
 
     List<Home> getAllHomePage(int begin, int num);
 
-    int modifyAddress(String homeid, String address);
+    int updateHomeAddress(String homeid, String address);
 
     int deleteHome(String homeid);
 
     int addHomeAddress(Home home);
 
     int addHomeAddressAcct(Home home);
+
+    int updateHomeMember(int homeid);
+
+    int updateHomeHost(int homeid, int userid);
+
 }
