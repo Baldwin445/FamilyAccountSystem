@@ -112,6 +112,21 @@
             }
         })
 
+        //listen to Add button
+        $("#add").click(function () {
+            var url = 'sys_userAdd.html';
+            layer.open({
+                type: 2,
+                area: ['500px', '60%'],
+                fix: false, //不固定
+                maxmin: true,
+                shadeClose: false,
+                shade:0,
+                title: '添加家庭信息',
+                content: [url, 'no']
+            });
+        })
+
     })
 
 

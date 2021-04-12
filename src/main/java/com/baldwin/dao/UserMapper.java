@@ -15,6 +15,10 @@ public interface UserMapper {
 
     int regUser(User user);
 
+    int addUser(User user);
+
+    int addUserNoHomeID(User user);
+
     int existUserCheck(String acct);
 
     int setUserPermission(int userid, int access);
@@ -32,4 +36,6 @@ public interface UserMapper {
     User getUserByID(int userid);
 
     int updateRoleInfo(RoleInfo roleInfo);
+
+    int addRoleInfo(RoleInfo roleInfo);
 }

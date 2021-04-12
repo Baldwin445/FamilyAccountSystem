@@ -6,6 +6,9 @@ import com.baldwin.entity.Home;
 import com.baldwin.entity.RoleInfo;
 import com.baldwin.entity.User;
 import com.baldwin.service.UserService;
+import com.baldwin.utils.LogUtil;
+import com.baldwin.utils.Result;
+import com.baldwin.utils.ResultUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -82,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
         //update the home info if it exists
         if(homeid != 0){
-            homeMapper.updateHomeMember(homeid);
+            homeMapper.updateHomeMember(homeid, -1);
             if(user.getAccess().getAccess() == 3)
                 homeMapper.updateHomeHost(homeid, -1);
         }
@@ -102,6 +105,61 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByID(int userid) {
         return mapper.getUserByID(userid);
+    }
+
+    /**
+     * for admin to add user/admin 对于管理员用于添加管理员和用户账号
+     * @param user
+     * @return the result and data
+     * @TODO: 检测登录账号的acct的冲突
+     */
+    @Override
+    public Result addAdminOrUser(User user) {
+        //add home info -> roleinfo -> user -> access
+        try {
+            //home member +1家庭成员人数+1
+            if(user.getHouseId() != 0) homeMapper.updateHomeMember(user.getHouseId(), 1);
+            //add role info 增加用户个人信息
+            RoleInfo role = user.getRoleInfo();
+            mapper.addRoleInfo(role);
+            user.setRoleId(role.getRoleId());
+            //add user acct 添加用户账号及权限
+            if(user.getHouseId() != 0) mapper.addUser(user);
+            else mapper.addUserNoHomeID(user);
+            mapper.setUserPermission(user.getId(), user.getAccess().getAccess());
+        }catch (Exception e){
+            return ResultUtil.error(e);
+        }
+
+        return ResultUtil.success(user);
+    }
+
+    /**
+     * for admin to add host 对于管理员用于添加户主账号
+     * @param user
+     * @return the result and data
+     * @TODO: 检测登录账号的acct的冲突
+     */
+    @Override
+    public Result addHost(User user) {
+        //get home -> add roleinfo -> user -> access -> home info
+        Home home = new Home();
+        if(user.getHouseId() == 0)
+            homeMapper.addHomeAddress(home);
+        else
+            home = homeMapper.getHomeByHomeID(user.getHouseId());
+        user.setHouseId(home.getId());
+
+        mapper.addRoleInfo(user.getRoleInfo());
+        user.setRoleId(user.getRoleInfo().getRoleId());
+
+        mapper.addUser(user);
+        mapper.setUserPermission(user.getId(), user.getAccess().getAccess());
+
+        homeMapper.updateHomeMember(user.getHouseId(), 1);
+        homeMapper.updateHomeHost(user.getHouseId(), user.getId());
+
+        return ResultUtil.success(user);
     }
 
 

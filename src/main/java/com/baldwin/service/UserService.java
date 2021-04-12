@@ -3,6 +3,7 @@ package com.baldwin.service;
 import com.baldwin.entity.Home;
 import com.baldwin.entity.RoleInfo;
 import com.baldwin.entity.User;
+import com.baldwin.utils.Result;
 
 import java.util.List;
 
@@ -28,6 +29,9 @@ public interface UserService {
     int updateRoleInfo(RoleInfo roleInfo);
 
     User getUserByID(int userid);
+
+    Result addAdminOrUser(User user);
+    Result addHost(User user);
 
 
 }

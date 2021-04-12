@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import sun.rmi.runtime.Log;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -179,6 +180,24 @@ public class UserController {
         if(result == 1) return ResultUtil.success();
         else if(result == 0) return ResultUtil.unSuccess();
         else return ResultUtil.unSuccess("修改成功但数据异常");
+    }
+
+    /**
+     * admin add the user(host/user/admin)
+     * add home info -> roleinfo -> user -> access
+     * @param user
+     * @return
+     */
+    @RequestMapping("/adminAddUser")
+    @ResponseBody
+    public Result adminAddUser(User user){
+        int access = user.getAccess().getAccess();
+        Result result;
+        if(access >> 2 == 1) return userService.addAdminOrUser(user);
+        if(access >> 1 == 1) return userService.addHost(user);
+        if(access == 1) return userService.addAdminOrUser(user);
+
+        return ResultUtil.unSuccess("未知错误 未能成功执行");
     }
 
 }

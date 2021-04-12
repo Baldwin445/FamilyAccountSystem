@@ -1,6 +1,6 @@
 package com.baldwin.entity;
 
-public class Permission {
+public class Permission{
     private int userId;
     private int access;
 

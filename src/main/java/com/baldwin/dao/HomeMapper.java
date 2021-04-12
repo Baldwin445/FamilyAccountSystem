@@ -23,8 +23,10 @@ public interface HomeMapper {
 
     int addHomeAddressAcct(Home home);
 
-    int updateHomeMember(int homeid);
+    int updateHomeMember(int homeid, int num);
 
     int updateHomeHost(int homeid, int userid);
+
+    Home getHomeByHomeID(int homeid);
 
 }

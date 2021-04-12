@@ -60,11 +60,15 @@
     </insert>
 
     <update id="updateHomeMember">
-        UPDATE home SET acctnum = acctnum-1 WHERE id = #{homeid}
+        UPDATE home SET acctnum = acctnum + #{num} WHERE id = #{homeid}
     </update>
 
     <update id="updateHomeHost">
         UPDATE home SET ownerid = #{userid} WHERE id = #{homeid}
     </update>
+
+    <select id="getHomeByHomeID" resultType="com.baldwin.entity.Home">
+        SELECT * FROM home WHERE id = #{homeid}
+    </select>
 
 </mapper>

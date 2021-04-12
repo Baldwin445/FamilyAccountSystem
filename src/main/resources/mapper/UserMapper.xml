@@ -17,6 +17,16 @@
             VALUE (null, null, null, #{acct}, #{pwd})
     </insert>
 
+    <insert id="addUser" parameterType="com.baldwin.entity.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO user(id, roleid, homeid, acct, pwd)
+            VALUE (null, #{roleId}, #{houseId}, #{acct}, #{pwd})
+    </insert>
+
+    <insert id="addUserNoHomeID" parameterType="com.baldwin.entity.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO user(id, roleid, homeid, acct, pwd)
+            VALUE (null, #{roleId}, null, #{acct}, #{pwd})
+    </insert>
+
     <select id="existUserCheck" resultType="int">
         SELECT id FROM user WHERE acct = #{acct}
     </select>
@@ -81,5 +91,11 @@
         </set>
         WHERE roleid = #{roleId}
     </update>
+
+    <insert id="addRoleInfo" parameterType="com.baldwin.entity.RoleInfo"
+            useGeneratedKeys="true" keyProperty="roleId">
+        INSERT INTO roleinfo(roleid, relation, nickname, realname, tel, email)
+        VALUE (null, #{relation}, #{nickname}, #{realname}, #{tel}, #{email})
+    </insert>
 
 </mapper>
