@@ -21,13 +21,25 @@ public class JumpToController {
     @Resource
     private UserService userService;
 
-    /*
+    /**
     * 接受/pages请求并将{page}部分处理返回
     * 实现无视/pages路径
     * */
     @RequestMapping("/pages/{page}")
     public String toPage(@PathVariable String page) {
         return page.replace("_", "/");
+    }
+
+    /**
+     * 跳转页面同时附加id参数
+     * @param userid
+     * @return
+     */
+    @RequestMapping("/pages/{page}/{userid}")
+    public String toPageWithID(@PathVariable String page, @PathVariable String userid,
+                                   Model m) {
+        User user = userService.getUserByID(Integer.valueOf(userid));
+        return "/sys/userEdit";
     }
 
     @RequestMapping("/pages/null")

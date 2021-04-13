@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>账单修改</title>
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet"/>
+    <script th:src="@{/lib/layui/layui.js}"></script>
+    <script th:src="@{/lib/layui/layui.all.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
+    <style>
+        .layui-form {
+            padding: 30px 30px;
+        }
+    </style>
+</head>
+<body>
+<form class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+        <label class="layui-form-label">支付方式</label>
+        <div class="layui-input-inline">
+            <select id="payTagField" th:fragment="payTagField" name="tagid">
+                <option th:each="t:${allTags}" th:value="${t.tagid}" th:text="${t.tagName}"></option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">金额</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" name="money" id="money" placeholder="请输入金额">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择日期</label>
+        <div class="layui-input-inline">
+            <input type="date" name="time" id="date" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="on" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+            <textarea placeholder="请输入内容" class="layui-textarea" name="comment" id="comment"></textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <input class="layui-btn" value="修改" lay-submit lay-filter="modify" style="width:100%;" type="submit">
+    </div>
+</form>
+</body>
+<script>
+    layui.use(['form','layer','laydate'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            laydate = layui.laydate
+
+        var billID = sessionStorage.getItem("currentBillID");
+        var userid = sessionStorage.getItem("userid");
+
+        $.ajax({
+            url: '/getPayTags/'+ userid +'/pay',
+            type: 'POST',
+            success: function (data) {
+                $("#payTagField").html($(data).html());
+                form.render('select');
+
+                $.ajax({
+                    url: '/getBill/'+ billID,
+                    type: 'POST',
+                    success: function (res) {
+                        var bill = res.data, tagid = bill.tagid;
+                        $("#payTagField").val(tagid);
+                        $("#comment").text(bill.comment);
+                        $("#money").val(bill.money);
+                        laydate.render({
+                            elem: '#date',
+                            theme: 'grid',
+                            value: bill.time,
+                            max: 0
+                        })
+                        form.render();
+                    }
+                })
+            }
+        });
+
+        form.on('submit(modify)', function (data) {
+            layer.confirm("确认修改？", {title: false, closeBtn: false, skin: 'layui-layer-molv'}, function (layno) {
+                layer.close(layno);
+                console.log(data.field)
+                var url = "/updateBill/" + billID;
+                $.post(url, data.field, function (res) {
+                    if (res.code == 200) {
+                        layer.msg(res.msg, {time: 600}, function () {
+                            parent.layer.closeAll();
+                            sessionStorage.removeItem("currentBillID");
+                            window.parent.location.reload();
+                        });
+                    } else {
+                        layer.msg(res.msg);
+                        parent.layer.closeAll();
+                        sessionStorage.removeItem("currentBillID");
+                    }
+                });
+            });
+            return false;   //防止form的action提交
+        } )
+    })
+</script>
+
+</html>

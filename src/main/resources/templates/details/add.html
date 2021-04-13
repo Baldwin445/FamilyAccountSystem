@@ -165,7 +165,7 @@
 
         //逐个绑定
         laydate.render({
-        elem: "#paydate"
+            elem: "#paydate"
             ,theme: 'grid'
             ,value: new Date()
             ,max: 0
@@ -219,7 +219,7 @@
 
     /*初始化数据*/
     function initPayData(form, id){
-        var url = '/getPayTags/'+ id;
+        var url = '/getPayTags/'+ id + '/add';
         $.ajax({
             url: url,
             type: 'POST',

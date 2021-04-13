@@ -12,6 +12,16 @@ public class Bill {
     private float money;
     private String comment;
     private String time;
+    private User user;
+    private RoleInfo roleInfo;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {
@@ -27,7 +37,25 @@ public class Bill {
                 ", money=" + money +
                 ", comment='" + comment + '\'' +
                 ", time='" + time + '\'' +
+                ", user=" + user +
+                ", roleInfo=" + roleInfo +
                 '}';
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public RoleInfo getRoleInfo() {
+        return roleInfo;
+    }
+
+    public void setRoleInfo(RoleInfo roleInfo) {
+        this.roleInfo = roleInfo;
     }
 
     public int getTypeid() {
@@ -60,14 +88,6 @@ public class Bill {
 
     public void setCollectid(String collectid) {
         this.collectid = collectid;
-    }
-
-    public int getid() {
-        return id;
-    }
-
-    public void setid(int id) {
-        this.id = id;
     }
 
     public int getPaywayid() {

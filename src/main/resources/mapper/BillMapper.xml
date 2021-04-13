@@ -3,6 +3,23 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.baldwin.dao.BillMapper">
+    <resultMap id="billInfoBean" type="com.baldwin.entity.Bill">
+        <result column="id" property="id"/>
+        <result column="tagid" property="tagid"/>
+        <result column="type" property="typeid"/>
+        <result column="collectid" property="collectid"/>
+        <result column="paywayid" property="paywayid"/>
+        <result column="userid" property="userid"/>
+        <result column="money" property="money"/>
+        <result column="comment" property="comment"/>
+        <result column="time" property="time"/>
+        <result column="tagName" property="tagName"/>
+        <association property="roleInfo" javaType="com.baldwin.entity.RoleInfo">
+            <result column="relation" property="relation"/>
+            <result column="realname" property="realname"/>
+            <result column="nickname" property="nickname"/>
+        </association>
+    </resultMap>
 
     <insert id="addPayBill" parameterType="com.baldwin.entity.Bill" useGeneratedKeys="true" keyProperty="id">
         insert into bill(id,tagid,type,userid,money,comment,time)
@@ -13,5 +30,42 @@
         insert into bill(id,tagid,type,userid,money,comment,time)
             value (null, #{tagid},#{typeid},#{userid},#{money},#{comment},#{time})
     </insert>
+
+    <select id="getBill" resultMap="billInfoBean">
+        SELECT * FROM
+            bill LEFT JOIN tag ON tag.tagid = bill.tagid
+                 LEFT JOIN user ON user.id = bill.userid
+                 LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
+        WHERE bill.type = #{typeid} AND bill.userid = #{userid}
+        LIMIT #{begin},#{num}
+    </select>
+
+    <select id="getHomeBill" resultMap="billInfoBean">
+        SELECT * FROM
+            bill LEFT JOIN tag ON tag.tagid = bill.tagid
+                 LEFT JOIN user ON user.id = bill.userid
+                 LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
+        WHERE bill.type = #{typeid} AND user.homeid = #{houseid}
+            LIMIT #{begin},#{num}
+    </select>
+
+    <delete id="delBill">
+        DELETE FROM bill WHERE id = #{billID}
+    </delete>
+
+    <select id="getBillByID" resultType="com.baldwin.entity.Bill">
+        SELECT * FROM bill WHERE id = #{billID}
+    </select>
+
+    <update id="updateBill" parameterType="com.baldwin.entity.Bill">
+        UPDATE bill
+        <set>
+            <if test="money != null and money !=''">money = #{money},</if>
+            <if test="tagid != null and tagid !=''">tagid = #{tagid},</if>
+            <if test="time != null and time !=''">time = #{time},</if>
+            <if test="comment != null and comment !=''">comment = #{comment},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
 
 </mapper>

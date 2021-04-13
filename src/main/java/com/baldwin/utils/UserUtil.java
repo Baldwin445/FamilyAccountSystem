@@ -34,7 +34,7 @@ public class UserUtil {
 
     //return the List<User> JSON(Two level into One level)
     //返回用户列表的json数据，将数据扁平化
-    public static String getUserJSON(List<User> list){
+    public static String userModelToJSON(List<User> list){
         JSONArray jsonArray = new JSONArray();
 
         for(User l: list){

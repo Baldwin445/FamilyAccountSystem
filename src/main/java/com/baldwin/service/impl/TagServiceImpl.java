@@ -60,7 +60,6 @@ public class TagServiceImpl implements TagService {
             if(t.getTypeid() == typeid)
                 return t.getTagid();
 
-
         return -1; //return -1 when loop didn't get the id
     }
 }

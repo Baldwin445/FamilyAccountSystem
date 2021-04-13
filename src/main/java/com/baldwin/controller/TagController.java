@@ -24,13 +24,13 @@ public class TagController {
     @Resource
     private TagService tagService;
 
-    @RequestMapping(value="/getPayTags/{userid}",method = RequestMethod.POST)
-    public String getPayTag(@PathVariable String userid, Model m){
+    @RequestMapping(value="/getPayTags/{userid}/{file}",method = RequestMethod.POST)
+    public String getPayTag(@PathVariable String userid,@PathVariable String file, Model m){
         List<Tag> allTags = tagService.getDefaultTag();
         allTags.addAll(tagService.getUserTag(Integer.parseInt(userid)));
 //        LogUtil.log(allTags);
         m.addAttribute("allTags", allTags);
-        return "/details/add::payTagField";
+        return "/details/"+ file +"::payTagField";
     }
 
     @RequestMapping(value = "/getIncomeTags/{userid}", method = RequestMethod.POST)
@@ -41,4 +41,7 @@ public class TagController {
         m.addAttribute("incomeTags", allTags);
         return "/details/add::incomeTagField";
     }
+
+
+
 }

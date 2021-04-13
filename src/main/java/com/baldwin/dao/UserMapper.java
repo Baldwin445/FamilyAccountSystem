@@ -27,6 +27,8 @@ public interface UserMapper {
 
     List<User> getAllUser(int begin, int num);
 
+    User getCompleteUser(int userid);
+
     int countAllUser();
 
     int deleteUser(int userid);
@@ -38,4 +40,5 @@ public interface UserMapper {
     int updateRoleInfo(RoleInfo roleInfo);
 
     int addRoleInfo(RoleInfo roleInfo);
+
 }

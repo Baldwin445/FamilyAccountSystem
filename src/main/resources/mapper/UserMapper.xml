@@ -64,6 +64,13 @@
         ORDER BY id ASC LIMIT #{begin},#{num}
     </select>
 
+    <select id="getCompleteUser" resultMap="userInfoBean">
+        SELECT id, homeid, nickname, realname, relation, tel, email, access
+        FROM permission RIGHT JOIN (user AS u LEFT JOIN roleinfo AS r ON u.roleid = r.roleid)
+                                   ON u.id = permission.userid
+        WHERE id = #{userid}
+    </select>
+
     <select id="countAllUser" resultType="int">
         SELECT count(1) FROM user
     </select>

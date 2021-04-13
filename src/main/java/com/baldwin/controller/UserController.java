@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import sun.rmi.runtime.Log;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -78,6 +79,19 @@ public class UserController {
     @RequestMapping("/register")
     public String registerPage(){
         return "register";
+    }
+
+    /**
+     * logout 登出操作
+     */
+    @RequestMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response){
+        Cookie[] cookies = request.getCookies();
+        LogUtil.log(cookies);
+
+        request.getSession().removeAttribute(UserUtil.CURRENT_USER);
+        request.getSession().removeAttribute(UserUtil.CURRENT_USERID);
+        return "login";
     }
 
     /**
@@ -155,7 +169,7 @@ public class UserController {
         List<User> userList = userService.getAllUser(begin, num);
         LogUtil.log(userList);
         //put data into Json
-        String js = UserUtil.getUserJSON(userList);
+        String js = UserUtil.userModelToJSON(userList);
         LogUtil.log(js);
 
         int count = userService.countAllUser();
