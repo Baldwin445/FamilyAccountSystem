@@ -51,7 +51,7 @@
 
     <div class="layui-card-body">
         <xblock>
-            <span class="x-right" style="line-height:40px">共有数据：<span id="num"></span> 条</span>
+            <span class="x-right" style="line-height:40px">共有 <span id="num"></span> 条数据</span>
         </xblock>
         <table id="billTable" lay-filter="billTable"></table>
     </div>
@@ -69,7 +69,7 @@
         form.on('submit(search)', function (data){
             console.log(data.field)
             table.reload('tableReload',{
-                url: '/searchBill/pay',
+                url: '/searchBill/income',
                 page:{
                     curr:1
                 },

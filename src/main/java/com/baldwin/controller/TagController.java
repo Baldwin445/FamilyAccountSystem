@@ -42,6 +42,22 @@ public class TagController {
         return "/details/add::incomeTagField";
     }
 
+    @RequestMapping(value = "/getTags/{userid}/{file}/{type}", method = RequestMethod.POST)
+    public String getBothTag(@PathVariable String userid,
+                             @PathVariable String file,
+                             @PathVariable String type,Model m){
+        List<Tag> allTags;
+        if(type.equals("pay")){
+            allTags = tagService.getDefaultIncomeTag();
+            allTags.addAll(tagService.getUserIncomeTag(Integer.parseInt(userid)));
+        }else {
+            allTags = tagService.getDefaultIncomeTag();
+            allTags.addAll(tagService.getUserIncomeTag(Integer.parseInt(userid)));
+        }
+        m.addAttribute("allTags", allTags);
+        return "/details/"+ file +"::tagField";
+    }
+
 
 
 }
