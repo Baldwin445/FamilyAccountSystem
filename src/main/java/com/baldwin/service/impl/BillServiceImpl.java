@@ -5,6 +5,7 @@ import com.baldwin.dao.UserMapper;
 import com.baldwin.entity.Bill;
 import com.baldwin.entity.User;
 import com.baldwin.service.BillService;
+import com.baldwin.utils.LogUtil;
 import com.baldwin.utils.UserUtil;
 import org.springframework.stereotype.Service;
 
@@ -65,5 +66,27 @@ public class BillServiceImpl implements BillService {
             bill = billMapper.getHomeBill(typeid, user.getHouseId(), begin, num);
 
         return bill;
+    }
+
+    @Override
+    public List<Bill> searchBill(int begin, int num, int userid,
+                                 String startDate, String endDate,
+                                 String name, int tagid, int typeid) {
+        User user = userMapper.getCompleteUser(userid);
+        int access = user.getAccess().getAccess();
+        List<Bill> bills;
+        if(access == UserUtil.USER_ACCESS_MEMBER)
+            bills = billMapper.searchSelfBill(begin, num, userid,
+                    startDate, endDate,
+                    name, tagid, typeid);
+        else if(user.getHouseId() == 0)
+            bills = billMapper.searchSelfBill(begin, num, userid,
+                    startDate, endDate,
+                    name, tagid, typeid);
+        else
+            bills = billMapper.searchHomeBill(begin, num, user.getHouseId(),
+                    startDate, endDate,
+                    name, tagid, typeid);
+        return bills;
     }
 }

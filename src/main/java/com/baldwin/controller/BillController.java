@@ -8,10 +8,7 @@ import com.baldwin.service.UserService;
 import com.baldwin.utils.*;
 import net.sf.json.JSONArray;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -67,7 +64,6 @@ public class BillController {
         int num = page * limit;
 
         List<Bill> bill = billService.getBill(typeid, id, begin, num);
-        if (bill == null) return "";
         String js = BillUtil.billModelToJSON(bill);
         LogUtil.log(bill);
         LogUtil.log(js);
@@ -86,7 +82,7 @@ public class BillController {
 
     @RequestMapping("/getBill/{billID}")
     @ResponseBody
-    public Result getBill(@PathVariable String billID){
+    public Result getBillByID(@PathVariable String billID){
         Bill bill = billService.getBill(Integer.valueOf(billID));
         if(bill == null) return ResultUtil.unSuccess();
         else {
@@ -103,4 +99,29 @@ public class BillController {
         if(result == 1) return ResultUtil.success();
         else return ResultUtil.unSuccess();
     }
+
+    @RequestMapping("/searchBill/{type}")
+    @ResponseBody
+    public String searchHome(int page, int limit, HttpServletRequest request,
+                             @PathVariable String type,
+                             @RequestParam(required = false, name = "tagID") int tagid,
+                             @RequestParam(required = false, name = "name") String name,
+                             @RequestParam(required = false, name = "startDate") String start,
+                             @RequestParam(required = false, name = "endDate") String end){
+        int begin = limit * (page - 1);
+        int num = page * limit;
+        int typeid = type.equals("pay")? 1:(type.equals("income")?2:0);
+        int userid = (int) request.getSession().getAttribute(UserUtil.CURRENT_USERID);
+        List<Bill> bills =
+                billService.searchBill(begin, num, userid, start, end, name, tagid, typeid);
+        LogUtil.log(bills);
+
+        String js = BillUtil.billModelToJSON(bills);
+        LogUtil.log(bills);
+        LogUtil.log(js);
+
+        String jso = "{\"code\":0,\"msg\":\"\",\"count\":"+bills.size()+",\"data\":"+js+"}";
+        return jso;
+    }
+
 }

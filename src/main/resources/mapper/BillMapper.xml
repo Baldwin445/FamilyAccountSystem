@@ -68,4 +68,34 @@
         WHERE id = #{id}
     </update>
 
+    <select id="searchSelfBill" resultMap="billInfoBean">
+        SELECT * FROM
+            bill LEFT JOIN tag ON tag.tagid = bill.tagid
+                 LEFT JOIN user ON user.id = bill.userid
+                 LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
+        <where>
+            bill.type = #{typeid} AND user.id = #{userid}
+            <if test="name != null and name != ''">AND (roleinfo.nickname = #{name} OR roleinfo.relation = #{name})</if>
+            <if test="startDate != null and startDate != ''">AND bill.time >= #{startDate}</if>
+            <if test="endDate != null and endDate != ''">AND bill.time &lt;= #{endDate}</if>
+            <if test="tagid != 0">AND bill.tagid = #{tagid}</if>
+        </where>
+        LIMIT #{begin},#{num}
+    </select>
+
+    <select id="searchHomeBill" resultMap="billInfoBean">
+        SELECT * FROM
+        bill LEFT JOIN tag ON tag.tagid = bill.tagid
+        LEFT JOIN user ON user.id = bill.userid
+        LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
+        <where>
+            bill.type = #{typeid} AND user.homeid = #{homeid}
+            <if test="name != null and name != ''">AND (roleinfo.nickname = #{name} OR roleinfo.relation = #{name})</if>
+            <if test="startDate != null and startDate != ''">AND bill.time >= #{startDate}</if>
+            <if test="endDate != null and endDate != ''">AND bill.time &lt;= #{endDate}</if>
+            <if test="tagid != 0">AND bill.tagid = #{tagid}</if>
+        </where>
+        LIMIT #{begin},#{num}
+    </select>
+
 </mapper>

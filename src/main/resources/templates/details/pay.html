@@ -2,44 +2,51 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>支付账单管理</title>
     <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet"/>
     <script th:src="@{/lib/layui/layui.js}"></script>
     <script type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
     <style type="text/css">
         form{
-            padding: 20px 30px;
+            padding: 20px 20px;
         }
     </style>
 </head>
 <body>
 <div class="x-body">
     <div class="layui-row">
-        <form class="layui-form layui-col-md12 x-so">
-            <div class="layui-inline">
-                <div class="layui-input-inline">
-                    <input type="text" name="time" id="beginDate" lay-verify="date" placeholder="开始日" class="layui-input">
+        <div class="layui-card-body">
+            <form class="layui-form layui-col-md12 x-so">
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input type="text" name="startDate" id="date1" lay-verify="date1" placeholder="开始时间" class="layui-input">
+                    </div>
                 </div>
-                <div class="layui-input-inline">
-                    <input type="text" name="time" id="endDate" lay-verify="date" placeholder="截止日" class="layui-input">
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input type="text" name="endDate" id="date2" lay-verify="date2" placeholder="结束时间" class="layui-input">
+                    </div>
                 </div>
-                <div class="layui-input-inline">
-                    <input type="text" placeholder="姓名" id="realname" autocomplete="off" class="layui-input">
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input type="text" placeholder="姓名" name="name" id="name" autocomplete="off" class="layui-input">
+                    </div>
                 </div>
-                <div class="layui-input-inline">
-                    <input type="text" placeholder="标题" id="title" autocomplete="off" class="layui-input">
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <select id="payTagField" th:fragment="payTagField" name="tagid">
+                            <option value="0" >选择支付方式</option>
+                            <option th:each="t:${allTags}" th:value="${t.tagid}" th:text="${t.tagName}"></option>
+                        </select>
+                    </div>
                 </div>
-                <div class="layui-input-inline">
-                    <select id="payTagField" th:fragment="payTagField">
-                        <option value="" >选择支付方式</option>
-                        <option th:each="t:${allTags}" th:value="${t.tagid}" th:text="${t.tagName}"></option>
-                    </select>
+                <div class="layui-inline">
+                    <button class="layui-btn" type="button" lay-submit="" lay-filter="search">
+                        <i class="layui-icon">&#xe615;</i>搜索
+                    </button>
                 </div>
-                <button class="layui-btn" type="button" lay-filter="search">
-                    <i class="layui-icon">&#xe615;</i>搜索
-                </button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 
     <div class="layui-card-body">
@@ -51,12 +58,64 @@
 </div>
 </body>
 <script>
-    layui.use(['form','layer','table','util'],function () {
+    layui.use(['form','layer','table','laydate'],function () {
         var table = layui.table,
             form = layui.form,
             layer = layui.layer,
-            util = layui.util;
+            laydate = layui.laydate;
         var userid = sessionStorage.getItem("userid");
+
+        //listen to the search form submit 监听搜索表单提交
+        form.on('submit(search)', function (data){
+            console.log(data.field)
+            table.reload('tableReload',{
+                url: '/searchBill/pay',
+                page:{
+                    curr:1
+                },
+                where:{
+                    tagID: data.field.tagid,
+                    name: data.field.name,
+                    startDate: data.field.startDate,
+                    endDate: data.field.endDate
+                },
+                done: function (res) {    //check layui DONE document
+                    $('#num').text(res.count);
+                }
+            })
+        })
+
+        //init date input 初始化日期选择
+        var startDate = laydate.render({
+            elem: '#date1',
+            format: 'yyyy-MM-dd',
+            max: 0,
+            theme: 'grid',
+            button: ['now', 'confirm'],
+            done: function (value, date) {
+                if (value != "") {
+                    date.month = date.month - 1;
+                    endDate.config.min = date;
+                } else {
+                    endDate.config.min = startDate.config.min;
+                }
+            }
+        });
+        var endDate = laydate.render({
+            elem: '#date2',//绑定的控件名称
+            type: 'date',//设置日期的类型
+            max: 0,
+            theme: 'grid',
+            button: ['now', 'confirm'],
+            done: function (value, date) {
+                if (value != "") {
+                    date.month = date.month - 1;
+                    startDate.config.max = date;
+                } else {
+                    startDate.config.max = endDate.config.max;
+                }
+            }
+        });
 
         //get Tag data 初始化搜索框数据
         $.ajax({
@@ -95,7 +154,7 @@
             }
         })
 
-        //listen to table tool
+        //listen to table tool  监听表格工具栏
         table.on('tool(billTable)', function (obj) {
             var data = obj.data;
             if(obj.event === 'del'){

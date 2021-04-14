@@ -16,4 +16,8 @@ public interface BillService {
     Bill getBill(int billID);
 
     int updateBill(Bill bill);
+
+    List<Bill> searchBill(int begin, int num, int userid,
+                          String startDate, String endDate,
+                          String name, int tagid, int typeid);
 }

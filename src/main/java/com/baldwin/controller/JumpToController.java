@@ -49,7 +49,7 @@ public class JumpToController {
 
     @RequestMapping("/test")
     public String toTestPage() {
-        return "/sys/home";
+        return "/details/pay";
     }
 
     /**
