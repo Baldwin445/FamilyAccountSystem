@@ -18,7 +18,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">支付方式</label>
         <div class="layui-input-inline">
-            <select id="payTagField" th:fragment="payTagField" name="tagid">
+            <select id="tagField" th:fragment="tagField" name="tagid">
                 <option th:each="t:${allTags}" th:value="${t.tagid}" th:text="${t.tagName}"></option>
             </select>
         </div>
@@ -55,12 +55,15 @@
 
         var billID = sessionStorage.getItem("currentBillID");
         var userid = sessionStorage.getItem("userid");
+        var type = sessionStorage.getItem("type");
+        var url = '/getTags/'+ userid +'/billEdit/' + type;
+        console.log(url);
 
         $.ajax({
-            url: '/getPayTags/'+ userid +'/pay',
+            url: url,
             type: 'POST',
             success: function (data) {
-                $("#payTagField").html($(data).html());
+                $("#tagField").html($(data).html());
                 form.render('select');
 
                 $.ajax({
@@ -68,7 +71,7 @@
                     type: 'POST',
                     success: function (res) {
                         var bill = res.data, tagid = bill.tagid;
-                        $("#payTagField").val(tagid);
+                        $("#tagField").val(tagid);
                         $("#comment").text(bill.comment);
                         $("#money").val(bill.money);
                         laydate.render({
@@ -93,12 +96,14 @@
                         layer.msg(res.msg, {time: 600}, function () {
                             parent.layer.closeAll();
                             sessionStorage.removeItem("currentBillID");
+                            sessionStorage.removeItem("type");
                             window.parent.location.reload();
                         });
                     } else {
                         layer.msg(res.msg);
                         parent.layer.closeAll();
                         sessionStorage.removeItem("currentBillID");
+                        sessionStorage.removeItem("type");
                     }
                 });
             });

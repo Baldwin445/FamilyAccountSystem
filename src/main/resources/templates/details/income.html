@@ -174,7 +174,9 @@
                     layer.close(index);
                 })
             }else if(obj.event === 'edit'){
+                //TODO: 需要在弹出层关闭时删除下面session内容
                 sessionStorage.setItem("currentBillID", data.id);
+                sessionStorage.setItem("type", "income");
                 /** EDIT post **/
                 var url = '/pages/details_billEdit';
                 layer.open({

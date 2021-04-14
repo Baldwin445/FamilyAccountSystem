@@ -48,8 +48,8 @@ public class TagController {
                              @PathVariable String type,Model m){
         List<Tag> allTags;
         if(type.equals("pay")){
-            allTags = tagService.getDefaultIncomeTag();
-            allTags.addAll(tagService.getUserIncomeTag(Integer.parseInt(userid)));
+            allTags = tagService.getDefaultTag();
+            allTags.addAll(tagService.getUserTag(Integer.parseInt(userid)));
         }else {
             allTags = tagService.getDefaultIncomeTag();
             allTags.addAll(tagService.getUserIncomeTag(Integer.parseInt(userid)));

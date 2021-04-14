@@ -175,11 +175,12 @@
                 })
             }else if(obj.event === 'edit'){
                 sessionStorage.setItem("currentBillID", data.id);
+                sessionStorage.setItem("type", "pay");
                 /** EDIT post **/
                 var url = '/pages/details_billEdit';
                 layer.open({
                     type: 2,
-                    area: ['600px', '50%'],
+                    area: ['600px', '500px'],
                     fix: false, //不固定
                     maxmin: true,
                     shadeClose: false,
