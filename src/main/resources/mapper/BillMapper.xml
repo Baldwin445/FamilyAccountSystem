@@ -98,4 +98,23 @@
         LIMIT #{begin},#{num}
     </select>
 
+    <insert id="updateBillCollection">
+        INSERT INTO billcollection
+            VALUE (#{collectID}, #{userID}, #{amount}, #{from})
+    </insert>
+
+    <insert id="insertWeChatData" parameterType="com.baldwin.entity.WeChatData">
+        INSERT INTO bill(id, tagid, type, collectid, userid, money, comment, time)
+        VALUE (null, #{tagID}, #{typeid}, #{collectID}, #{userID}, #{money}, #{comment}, #{time})
+    </insert>
+
+    <select id="getBillByCollectID" resultMap="billInfoBean">
+        SELECT * FROM
+            bill LEFT JOIN tag ON tag.tagid = bill.tagid
+                 LEFT JOIN user ON user.id = bill.userid
+                 LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
+                 LEFT JOIN billcollection ON user.id = billcollection.userid
+        WHERE billcollection.collectid = #{collectID}
+    </select>
+
 </mapper>

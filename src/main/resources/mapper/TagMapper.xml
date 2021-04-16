@@ -21,4 +21,11 @@
     <select id="tagNameToID" resultType="com.baldwin.entity.Tag">
         SELECT * FROM tag WHERE userid = #{userid} AND tagname = #{tagName}
     </select>
+
+    <insert id="insertUserImportTag" parameterType="com.baldwin.entity.Tag" useGeneratedKeys="true" keyProperty="tagid">
+        INSERT INTO tag(tagid, userid, tagname, type) VALUES
+            <foreach collection="tags" item="t" separator=",">
+                (null , #{t.userid}, #{t.tagName}, #{t.typeid})
+            </foreach>
+    </insert>
 </mapper>

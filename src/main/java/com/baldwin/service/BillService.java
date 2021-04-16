@@ -1,6 +1,7 @@
 package com.baldwin.service;
 
 import com.baldwin.entity.Bill;
+import com.baldwin.entity.WeChatData;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface BillService {
     List<Bill> searchBill(int begin, int num, int userid,
                           String startDate, String endDate,
                           String name, int tagid, int typeid);
+
+    List<WeChatData> importWeChatData(int userid, List<WeChatData> wcData);
 }

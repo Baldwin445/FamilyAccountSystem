@@ -1,6 +1,8 @@
 package com.baldwin.dao;
 
 import com.baldwin.entity.Bill;
+import com.baldwin.entity.WeChatData;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,4 +31,9 @@ public interface BillMapper {
                               String startDate, String endDate,
                               String name, int tagid, int typeid);
 
+    int updateBillCollection(String collectID, int userID, int amount, String from);
+
+    int insertWeChatData(WeChatData weChatData);
+
+    List<Bill> getBillByCollectID(String collectID);
 }

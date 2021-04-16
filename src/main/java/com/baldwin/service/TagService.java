@@ -15,4 +15,7 @@ public interface TagService {
 
     int tagNameToID(int userid, String tagName, int type);
 
+    List<Tag> getUserAllPayTag(int userid);
+
+    List<Tag> getUserAllIncomeTag(int userid);
 }

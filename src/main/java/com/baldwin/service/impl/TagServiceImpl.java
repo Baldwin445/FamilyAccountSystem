@@ -56,10 +56,25 @@ public class TagServiceImpl implements TagService {
             return tags.get(0).getTagid();
 
         //loop when the size of tags >= 2
+        //当出现多个tag时查找属于 支出/收入对应类型
         for (Tag t: tags)
             if(t.getTypeid() == typeid)
                 return t.getTagid();
 
         return -1; //return -1 when loop didn't get the id
+    }
+
+    @Override
+    public List<Tag> getUserAllPayTag(int userid) {
+        List<Tag> payTags = mapper.getDefaultTag();
+        payTags.addAll(mapper.getUserTag(userid));
+        return payTags;
+    }
+
+    @Override
+    public List<Tag> getUserAllIncomeTag(int userid) {
+        List<Tag> incomeTags = mapper.getDefaultIncomeTag();
+        incomeTags.addAll(mapper.getUserIncomeTag(userid));
+        return incomeTags;
     }
 }
