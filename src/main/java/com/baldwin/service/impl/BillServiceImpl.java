@@ -59,7 +59,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public Bill getBill(int billID) {
+    public Bill getBillByID(int billID) {
         return billMapper.getBillByID(billID);
     }
 
@@ -72,24 +72,41 @@ public class BillServiceImpl implements BillService {
     public List<Bill> getBill(int typeid, int userid, int begin, int num) {
         User user = userMapper.getCompleteUser(userid);
         int access = user.getAccess().getAccess();
+        int homeID = user.getHouseId();
         List<Bill> bill;
 
         //user: 仅看自己的账单
         //host/admin: 看全家人的
         if(access == UserUtil.USER_ACCESS_MEMBER)
-            bill = billMapper.getBill(typeid, userid, begin, num);
-        else if(user.getHouseId() == 0)
-            bill = billMapper.getBill(typeid, userid, begin, num);
+            bill = billMapper.getSelfBill(typeid, userid, begin, num);
+        else if(homeID == 0)
+            bill = billMapper.getSelfBill(typeid, userid, begin, num);
         else
-            bill = billMapper.getHomeBill(typeid, user.getHouseId(), begin, num);
+            bill = billMapper.getHomeBill(typeid, homeID, begin, num);
 
         return bill;
     }
 
     @Override
+    public int countBill(int typeid, int userid) {
+        User user = userMapper.getCompleteUser(userid);
+        int access = user.getAccess().getAccess();
+        int homeID = user.getHouseId();
+
+        //user: 仅看自己的账单
+        //host/admin: 看全家人的
+        if(access == UserUtil.USER_ACCESS_MEMBER)
+            return billMapper.countSelfBill(typeid, userid);
+        else if(homeID == 0)
+            return billMapper.countSelfBill(typeid, userid);
+        else
+            return billMapper.countHomeBill(typeid, homeID);
+    }
+
+    @Override
     public List<Bill> searchBill(int begin, int num, int userid,
                                  String startDate, String endDate,
-                                 String name, int tagid, int typeid) {
+                                 String name, int tagID, int typeID) {
         User user = userMapper.getCompleteUser(userid);
         int access = user.getAccess().getAccess();
         List<Bill> bills;
@@ -99,15 +116,15 @@ public class BillServiceImpl implements BillService {
         if(access == UserUtil.USER_ACCESS_MEMBER)
             bills = billMapper.searchSelfBill(begin, num, userid,
                     startDate, endDate,
-                    name, tagid, typeid);
+                    name, tagID, typeID);
         else if(user.getHouseId() == 0)
             bills = billMapper.searchSelfBill(begin, num, userid,
                     startDate, endDate,
-                    name, tagid, typeid);
+                    name, tagID, typeID);
         else
             bills = billMapper.searchHomeBill(begin, num, user.getHouseId(),
                     startDate, endDate,
-                    name, tagid, typeid);
+                    name, tagID, typeID);
         return bills;
     }
 
@@ -171,6 +188,27 @@ public class BillServiceImpl implements BillService {
         // get Bill inserted just now
         // 获取刚刚插入的账单数据
         return allData;
+    }
+
+    @Override
+    public int countSearchBill(int userid, String startDate, String endDate, String name, int tagID, int typeID) {
+        User user = userMapper.getCompleteUser(userid);
+        int access = user.getAccess().getAccess();
+
+        // Classify User and Admin/Host, then consider whether Admin/Host has homeID field
+        // 分类用户和管理员户主两类 再考虑管理员户主是否有HomeID字段
+        if(access == UserUtil.USER_ACCESS_MEMBER)
+            return billMapper.countSearchSelfBill(userid,
+                    startDate, endDate,
+                    name, tagID, typeID);
+        else if(user.getHouseId() == 0)
+            return billMapper.countSearchSelfBill(userid,
+                    startDate, endDate,
+                    name, tagID, typeID);
+        else
+            return billMapper.countSearchHomeBill(user.getHouseId(),
+                    startDate, endDate,
+                    name, tagID, typeID);
     }
 
     /**

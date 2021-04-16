@@ -13,9 +13,13 @@ public interface BillMapper {
 
     int addIncomeBill(Bill bill);
 
-    List<Bill> getBill(int typeid, int userid, int begin, int num);
+    List<Bill> getSelfBill(int typeID, int userID, int begin, int num);
 
-    List<Bill> getHomeBill(int typeid, int houseid, int begin, int num);
+    List<Bill> getHomeBill(int typeID, int homeID, int begin, int num);
+
+    int countSelfBill(int typeID, int userID);
+
+    int countHomeBill(int typeID, int homeID);
 
     int delBill(int billId);
 
@@ -36,4 +40,12 @@ public interface BillMapper {
     int insertWeChatData(WeChatData weChatData);
 
     List<Bill> getBillByCollectID(String collectID);
+
+    int countSearchSelfBill(int userid,
+                              String startDate, String endDate,
+                              String name, int tagid, int typeid);
+
+    int countSearchHomeBill(int homeid,
+                              String startDate, String endDate,
+                              String name, int tagid, int typeid);
 }

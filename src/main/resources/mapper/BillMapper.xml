@@ -31,12 +31,12 @@
             value (null, #{tagid},#{typeid},#{userid},#{money},#{comment},#{time})
     </insert>
 
-    <select id="getBill" resultMap="billInfoBean">
+    <select id="getSelfBill" resultMap="billInfoBean">
         SELECT * FROM
             bill LEFT JOIN tag ON tag.tagid = bill.tagid
                  LEFT JOIN user ON user.id = bill.userid
                  LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
-        WHERE bill.type = #{typeid} AND bill.userid = #{userid}
+        WHERE bill.type = #{typeID} AND bill.userid = #{userID}
         LIMIT #{begin},#{num}
     </select>
 
@@ -45,8 +45,24 @@
             bill LEFT JOIN tag ON tag.tagid = bill.tagid
                  LEFT JOIN user ON user.id = bill.userid
                  LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
-        WHERE bill.type = #{typeid} AND user.homeid = #{houseid}
+        WHERE bill.type = #{typeID} AND user.homeid = #{homeID}
             LIMIT #{begin},#{num}
+    </select>
+
+    <select id="countSelfBill" resultType="int">
+        SELECT count(1) FROM
+            bill LEFT JOIN tag ON tag.tagid = bill.tagid
+                 LEFT JOIN user ON user.id = bill.userid
+                 LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
+        WHERE bill.type = #{typeID} AND bill.userid = #{userID}
+    </select>
+
+    <select id="countHomeBill" resultType="int">
+        SELECT count(1) FROM
+            bill LEFT JOIN tag ON tag.tagid = bill.tagid
+                 LEFT JOIN user ON user.id = bill.userid
+                 LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
+        WHERE bill.type = #{typeID} AND user.homeid = #{homeID}
     </select>
 
     <delete id="delBill">
@@ -96,6 +112,34 @@
             <if test="tagid != 0">AND bill.tagid = #{tagid}</if>
         </where>
         LIMIT #{begin},#{num}
+    </select>
+
+    <select id="countSearchSelfBill" resultType="int">
+        SELECT count(1) FROM
+        bill LEFT JOIN tag ON tag.tagid = bill.tagid
+        LEFT JOIN user ON user.id = bill.userid
+        LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
+        <where>
+            bill.type = #{typeid} AND user.id = #{userid}
+            <if test="name != null and name != ''">AND (roleinfo.nickname = #{name} OR roleinfo.relation = #{name})</if>
+            <if test="startDate != null and startDate != ''">AND bill.time >= #{startDate}</if>
+            <if test="endDate != null and endDate != ''">AND bill.time &lt;= #{endDate}</if>
+            <if test="tagid != 0">AND bill.tagid = #{tagid}</if>
+        </where>
+    </select>
+
+    <select id="countSearchHomeBill" resultType="int">
+        SELECT count(1) FROM
+        bill LEFT JOIN tag ON tag.tagid = bill.tagid
+        LEFT JOIN user ON user.id = bill.userid
+        LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
+        <where>
+            bill.type = #{typeid} AND user.homeid = #{homeid}
+            <if test="name != null and name != ''">AND (roleinfo.nickname = #{name} OR roleinfo.relation = #{name})</if>
+            <if test="startDate != null and startDate != ''">AND bill.time >= #{startDate}</if>
+            <if test="endDate != null and endDate != ''">AND bill.time &lt;= #{endDate}</if>
+            <if test="tagid != 0">AND bill.tagid = #{tagid}</if>
+        </where>
     </select>
 
     <insert id="updateBillCollection">

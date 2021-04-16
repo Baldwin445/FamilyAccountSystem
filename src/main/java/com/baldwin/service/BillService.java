@@ -12,15 +12,21 @@ public interface BillService {
 
     List<Bill> getBill(int typeid, int userid, int begin, int num);
 
+    int countBill(int typeid, int userid);
+
     int delBill(int billID);
 
-    Bill getBill(int billID);
+    Bill getBillByID(int billID);
 
     int updateBill(Bill bill);
 
     List<Bill> searchBill(int begin, int num, int userid,
                           String startDate, String endDate,
-                          String name, int tagid, int typeid);
+                          String name, int tagID, int typeID);
 
     List<WeChatData> importWeChatData(int userid, List<WeChatData> wcData);
+
+    int countSearchBill(int userid,
+                        String startDate, String endDate,
+                        String name, int tagID, int typeID);
 }
