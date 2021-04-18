@@ -29,4 +29,6 @@ public interface BillService {
     int countSearchBill(int userid,
                         String startDate, String endDate,
                         String name, int tagID, int typeID);
+
+    List<Bill> getBillToChart(int userid, String startDate, String endDate);
 }

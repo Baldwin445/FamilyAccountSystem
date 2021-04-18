@@ -96,7 +96,7 @@
             <if test="endDate != null and endDate != ''">AND bill.time &lt;= #{endDate}</if>
             <if test="tagid != 0">AND bill.tagid = #{tagid}</if>
         </where>
-        LIMIT #{begin},#{num}
+        <if test="begin != -1 and num != -1">LIMIT #{begin},#{num}</if>
     </select>
 
     <select id="searchHomeBill" resultMap="billInfoBean">
@@ -111,7 +111,7 @@
             <if test="endDate != null and endDate != ''">AND bill.time &lt;= #{endDate}</if>
             <if test="tagid != 0">AND bill.tagid = #{tagid}</if>
         </where>
-        LIMIT #{begin},#{num}
+        <if test="begin != -1 and num != -1">LIMIT #{begin},#{num}</if>
     </select>
 
     <select id="countSearchSelfBill" resultType="int">

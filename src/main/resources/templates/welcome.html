@@ -3,10 +3,345 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Thymeleaf快速入门-Hello Thymeleaf</title>
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet"/>
+    <script th:src="@{/lib/layui/layui.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
+    <script type="text/javascript" th:src="@{/js/echarts.js}"></script>
 </head>
 <body>
-<p th:text="${name}">name</p>
-<p th:text="'Hello！ ' + ${name} + '!'">hello world</p>
-<p th:text="|Hello！ ${name}!|">hello world</p>
+<div class="x-body layui-anim layui-anim-up">
+    <blockquote class="layui-elem-quote">欢迎您，
+        <span id="role"></span>：
+        <span class="x-red" id="username"></span> ！本次登录时间：
+        <span id="date"></span>
+    </blockquote>
+    <fieldset class="layui-elem-field" id="lb">
+        <legend>排行榜</legend>
+        <div class="layui-field-box">
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <div class="layui-carousel x-admin-carousel x-admin-backlog" lay-anim="" lay-indicator="inside"
+                             lay-arrow="none" style="width: 100%; height: 150px;">
+                            <div carousel-item="">
+                                <ul class="layui-row layui-col-space10 layui-this" id="leaderBoard">
+                                    <li class="layui-col-xs6 layui-col-sm3">
+                                        <a href="javascript:;" class="x-admin-backlog-body">
+                                            <title>本月收入</title>
+                                            <ul>
+
+                                            </ul>
+                                        </a>
+                                    </li>
+                                    <li class="layui-col-xs6 layui-col-sm3">
+                                        <a href="javascript:;" class="x-admin-backlog-body">
+                                            <title>本月消费</title>
+                                            <ul>
+
+                                            </ul>
+                                        </a>
+                                    </li>
+                                    <li class="layui-col-xs6 layui-col-sm3">
+                                        <a href="javascript:;" class="x-admin-backlog-body">
+                                            <title>本月净收入</title>
+                                            <ul>
+
+                                            </ul>
+                                        </a>
+                                    </li>
+                                    <li class="layui-col-xs6 layui-col-sm3">
+                                        <a href="javascript:;" class="x-admin-backlog-body">
+                                            <title>支出方式</title>
+                                            <ul>
+
+                                            </ul>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="layui-elem-field">
+        <legend>数据统计</legend>
+        <div id="chart1" class="layui-col-md6 layui-col-sm12" style="height: 400px;"></div>
+        <div id="chart2" class="layui-col-md6 layui-col-sm12" style="height: 400px;"></div>
+    </fieldset>
+</div>
 </body>
+<script>
+    $(function () {
+        //init user Login info
+        //初始化用户登录信息
+
+
+
+        //加载数据
+        showData();
+
+        //init the charts
+        //初始化统计图数据
+        initChart();
+    })
+
+    function showData() {
+        var start = new Date();
+        start.setDate(1);
+        var end = new Date();
+        end.setMonth(end.getMonth() + 1)
+        end.setDate(1);
+        var date = {
+            "startTime": start.toLocaleDateString().replace(/\//g, '-'),
+            "endTime": end.toLocaleDateString().replace(/\//g, '-')
+        }
+        var userid = sessionStorage.getItem("userid");
+        $.post({
+            url: '/getBillToCharts/' + userid,
+            data: date,
+            success: function (res){
+                if(res.code == 200){
+                    setChart1(res.datas);
+                    setChart2(res.datas);
+                }
+            }
+        })
+    }
+
+
+    function initChart() {
+        // 基于准备好的dom，初始化echarts实例
+        myChart1 = echarts.init(document.getElementById('chart1'));
+        myChart2 = echarts.init(document.getElementById('chart2'));
+        // 指定图表的配置项和数据
+        myChart1.setOption({
+            title: {
+                text: '本月收支图',
+                left: 'center',
+                top: 20,
+                textStyle: {
+                    color: '#000'
+                }
+            },
+            legend: {
+                orient: 'vertical',
+                left: '10%',
+                top: '10%',
+                // align: 'left',
+                data:['收入', '支出'],
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{b} : {c}元 ({d}%)"
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            color: ['#ff9f7b', '#2fa1dd'],
+            series: [
+                {
+                    name: '本月收支',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '50%'],
+                    data: [],
+                    label: {
+                        position: 'inside',
+                        formatter: '{b} \n\n {d}%',
+                        fontSie: '40',
+                        fontWeight: 'bold',
+                    },
+                    labelLine: {
+                        normal: {
+                            lineStyle: {
+                                color: '#000'
+                            },
+                            smooth: 0.2,
+                            length: 10,
+                            length2: 20,
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            shadowBlur: 100,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
+                    animationType: 'scale',
+                    animationEasing: 'elasticOut',
+                    animationDelay: function (idx) {
+                        return Math.random() * 200;
+                    }
+                }
+            ]
+        });
+        myChart1.showLoading();
+        myChart2.setOption({
+            title: {
+                text: '本月收支对比',
+                x: 'center',
+                y: 'top'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                // orient: 'vertical',
+                data: ['收入', '支出', '净收入'],
+                x: 'left'
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: []
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name:'收入',
+                    type:'bar',
+                    itemStyle: {
+                        barBorderRadius: [5, 5, 5, 5],// 圆角（左上、右上、右下、左下）
+                        // color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                        //     {color: '#2FAEF2', offset: 0},
+                        //     {color: '#1CD8A8', offset: 1}
+                        // ]), // 渐变
+                        color: "#ed9473",
+                    },
+                    data:[],
+                },
+                {
+                    name:'支出',
+                    type:'bar',
+                    itemStyle: {
+                        barBorderRadius: [5, 5, 5, 5],// 圆角（左上、右上、右下、左下）
+                        // color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                        //     {color: '#c23531', offset: 0},
+                        //     {color: '#caba26', offset: 1}
+                        // ]), // 渐变
+                        color: "#2fa1dd"
+                    },
+                    data:[]
+                },
+                {
+                    name:'净收入',
+                    type:'line',
+                    areaStyle: {},
+                    itemStyle: {
+                        barBorderRadius: [5, 5, 5, 5],// 圆角（左上、右上、右下、左下）
+                        color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                            {color: '#e0dec6', offset: 0},
+                            {color: '#a1a1dc', offset: 1}
+                        ]), // 渐变
+                    },
+                    smooth: true, // 线条转折有弧度
+                    data:[]
+                }
+            ],
+            animationDuration: function (idx) {
+                // 越往后的数据延迟越大
+                return idx * 300;
+            }
+        });
+        myChart2.showLoading();
+    }
+
+    // 填入myChart1数据
+    function setChart1(datas) {
+        var paySum = 0;
+        var incomeSum = 0;
+        $.each(datas, function (index, item) {
+            if (item.typeid == 1) {
+                paySum += item.money;
+            } else if (item.typeid == 2) {
+                incomeSum += item.money;
+            }
+        })
+        myChart1.hideLoading();
+        myChart1.setOption({
+            series: [{
+                // 根据名字对应到相应的系列
+                name: '本月收支',
+                data: [
+                    {value: incomeSum.toFixed(2), name: '收入', selected: true},
+                    {value: paySum.toFixed(2), name: '支出'},
+                ]
+            }]
+        });
+    }
+
+    // 填入myChart2数据
+    function setChart2(datas) {
+
+        var x = [], payVal = new Array(30), incomeVal = new Array(30), netIncomeVal = new Array(30);
+        var now = new Date();
+        var next = new Date().setMonth(now.getMonth() + 1);
+        var between = (next - now) / (1000 * 60 * 60 * 24);
+        for (var i = 0; i < between; i++) {
+            payVal[i] = 0;
+            incomeVal[i] = 0, netIncomeVal[i] = 0;
+            var day = (i + 1) < 10 ? "0" + (i + 1) : (i + 1);
+            var month = now.getMonth() + 1 < 10 ? "0" + (now.getMonth() + 1) : (now.getMonth() + 1);
+            x.push(month + "-" + day);
+            var dateStr = now.getFullYear() + "-" + month + "-" + day;
+            var incomeSum = 0, paySum = 0, netIncomeSum = 0;
+            $.each(datas, function (index, item) {
+                if (item.time.split(" ")[0] == dateStr) {
+                    if (item.typeid == 1) {
+                        paySum += parseFloat(item.money);
+                    } else if (item.typeid == 2) {
+                        incomeSum += parseFloat(item.money);
+                    }
+                }
+            });
+            netIncomeSum += incomeSum - paySum;
+            payVal[i] = paySum;
+            incomeVal[i] = incomeSum;
+            netIncomeVal[i] = netIncomeSum;
+        }
+        myChart2.hideLoading();
+        myChart2.setOption({
+            xAxis: {
+                data: x
+            },
+            series: [
+                // 根据名字对应到相应的系列
+                {
+                    name: '支出',
+                    data: payVal
+                },
+                {
+                    name: '收入',
+                    data: incomeVal
+                },
+                {
+                    name: '净收入',
+                    data: netIncomeVal
+                }
+            ]
+        });
+    }
+
+
+
+
+</script>
 </html>

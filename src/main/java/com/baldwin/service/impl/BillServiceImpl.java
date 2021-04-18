@@ -211,6 +211,27 @@ public class BillServiceImpl implements BillService {
                     name, tagID, typeID);
     }
 
+    @Override
+    public List<Bill> getBillToChart(int userid, String startDate, String endDate) {
+        User user = userMapper.getCompleteUser(userid);
+        int access = user.getAccess().getAccess();
+        List<Bill> list = new ArrayList<>();
+
+        if(access == UserUtil.USER_ACCESS_MEMBER){
+            list.addAll(billMapper.searchSelfBill(-1, -1, userid, startDate,endDate, null, 0, 1));
+            list.addAll(billMapper.searchSelfBill(-1, -1, userid, startDate,endDate, null, 0, 2));
+        }
+        else if(user.getHouseId() == 0){
+            list.addAll(billMapper.searchSelfBill(-1, -1, userid, startDate,endDate, null, 0, 1));
+            list.addAll(billMapper.searchSelfBill(-1, -1, userid, startDate,endDate, null, 0, 2));
+        }
+        else{
+            list.addAll(billMapper.searchHomeBill(-1, -1, user.getHouseId(), startDate,endDate, null, 0, 1));
+            list.addAll(billMapper.searchHomeBill(-1, -1, user.getHouseId(), startDate,endDate, null, 0, 2));
+        }
+        return list;
+    }
+
     /**
      * Use to set the Tag Param
      * @param userid 用户id

@@ -164,9 +164,9 @@ public class UserController {
     @ResponseBody
     public String getAllUser(int page, int limit){
         int begin = limit * (page - 1);
-        int num = page * limit;
+
         //get the range of the List
-        List<User> userList = userService.getAllUser(begin, num);
+        List<User> userList = userService.getAllUser(begin, limit);
         LogUtil.log(userList);
         //put data into Json
         String js = UserUtil.userModelToJSON(userList);

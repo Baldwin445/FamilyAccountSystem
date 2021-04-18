@@ -33,9 +33,9 @@ public class HomeController {
     @ResponseBody
     public String getAllHomeJson(int page, int limit, Model m){
         int begin = limit * (page - 1);
-        int num = page * limit;
+
         //get the range of the List
-        List<Home> homeList = homeService.getAllHomePage(begin, num);
+        List<Home> homeList = homeService.getAllHomePage(begin, limit);
         int count = homeService.countAllHome();
         //put data into Json
         JSONArray json = JSONArray.fromObject(homeList);
@@ -67,14 +67,13 @@ public class HomeController {
                              @RequestParam(required = false, name = "homeid") String homeid,
                              @RequestParam(required = false, name = "hostname") String hostname){
         int begin = limit * (page - 1);
-        int num = page * limit;
 
         //when INPUT NOTHING, set them null can bring to /getAllHome
         if(homeid.equals("")) homeid = null;
         if(hostname.equals("")) hostname = null;
         int count;
 
-        List<Home> homeList = homeService.getHomeByID_Hostname(homeid, hostname, begin, num);
+        List<Home> homeList = homeService.getHomeByID_Hostname(homeid, hostname, begin, limit);
         JSONArray json = JSONArray.fromObject(homeList);
         String js = json.toString();
 

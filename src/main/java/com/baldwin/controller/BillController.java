@@ -59,7 +59,7 @@ public class BillController {
         int result;
         if(typeid == 1) result = billService.addPayBill(bill);
         else result = billService.addIncomeBill(bill);
-        LogUtil.log("AddBill Result", result);
+//        LogUtil.log("AddBill Result", result);
 
         return ResultUtil.success(bill);
     }
@@ -68,14 +68,16 @@ public class BillController {
     @ResponseBody
     public String getBill(@PathVariable String type, @PathVariable String userid,
                           int limit, int page){
+        int begin = (page - 1) * limit;
+
         int typeid = type.equals("pay")? 1:(type.equals("income")?2:0);
         int id = Integer.valueOf(userid);
 
-        List<Bill> bill = billService.getBill(typeid, id, page, limit);
+        List<Bill> bill = billService.getBill(typeid, id, begin, limit);
         int count = billService.countBill(typeid, id);
         String js = BillUtil.billModelToJSON(bill);
-        LogUtil.log(bill);
-        LogUtil.log(js);
+//        LogUtil.log(bill);
+//        LogUtil.log(js);
 
         String jso = "{\"code\":0,\"msg\":\"\",\"count\":"+count+",\"data\":"+js+"}";
         return jso;
@@ -117,16 +119,17 @@ public class BillController {
                              @RequestParam(required = false, name = "name") String name,
                              @RequestParam(required = false, name = "startDate") String start,
                              @RequestParam(required = false, name = "endDate") String end){
+        int begin = (page - 1) * limit;
+
         int typeid = type.equals("pay")? 1:(type.equals("income")?2:0);
         int userid = (int) request.getSession().getAttribute(UserUtil.CURRENT_USERID);
         List<Bill> bills =
-                billService.searchBill(page, limit, userid, start, end, name, tagid, typeid);
+                billService.searchBill(begin, limit, userid, start, end, name, tagid, typeid);
         int count = billService.countSearchBill(userid, start, end, name, tagid, typeid);
-        LogUtil.log(bills);
 
         String js = BillUtil.billModelToJSON(bills);
-        LogUtil.log(bills);
-        LogUtil.log(js);
+//        LogUtil.log(bills);
+//        LogUtil.log(js);
 
         String jso = "{\"code\":0,\"msg\":\"\",\"count\":"+count+",\"data\":"+js+"}";
         return jso;
@@ -171,5 +174,15 @@ public class BillController {
         return "{\"code\":0,\"msg\":\"上传成功！\",\"count\":"+0+",\"data\":"+0+"}";
     }
 
+    @RequestMapping("/getBillToCharts/{userid}")
+    @ResponseBody
+    public Result<Bill> getBillToCharts(@PathVariable String userid, String startTime, String endTime){
+        LogUtil.log("User", userid);
+        LogUtil.log("Start", startTime);
+        LogUtil.log("End", endTime);
+        List<Bill> bills = billService.getBillToChart(Integer.valueOf(userid), startTime, endTime);
+        if(bills == null) return ResultUtil.unSuccess();
+        else return ResultUtil.success(bills);
+    }
 
 }
