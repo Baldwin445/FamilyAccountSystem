@@ -4,16 +4,65 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Thymeleaf快速入门-Hello Thymeleaf</title>
     <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet"/>
+    <link th:href="@{/css/font.css}" rel="stylesheet"/>
+    <link th:href="@{/css/xadmin.css}" rel="stylesheet"/>
     <script th:src="@{/lib/layui/layui.js}"></script>
     <script type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
     <script type="text/javascript" th:src="@{/js/echarts.js}"></script>
+    <style type="text/css">
+        @media screen and (max-width: 600px) {
+            #chart1, #chart2 {
+                width: 90% !important;
+                margin-left: 5%;
+            }
+        }
+        .x-admin-backlog-body {
+            border-radius: 20px;
+            height: 121px;
+        }
+
+        .x-admin-backlog-body h2 {
+            font-weight: 400;
+            font-size: 16px;
+            color: #FF0000;
+            padding-bottom: 5px;
+        }
+
+        .x-admin-backlog-body h3 {
+            font-style: normal;
+            font-weight: 400;
+            padding-bottom: 5px;
+            font-size: inherit;
+            color: #009688;
+        }
+
+        .x-admin-backlog-body title {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        money {
+            float: right;
+        }
+        .x-red {
+            color: red;
+        }
+
+        h3:nth-of-type(1){
+            color: red;
+            font-weight: 400;
+            font-size: 16px;
+            padding-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
 <div class="x-body layui-anim layui-anim-up">
     <blockquote class="layui-elem-quote">欢迎您，
-        <span id="role"></span>：
-        <span class="x-red" id="username"></span> ！本次登录时间：
-        <span id="date"></span>
+        <span id="role" th:text="${role}"></span>：
+        <span class="x-red" id="username" th:text="${acct}"></span> ！本次登录时间：
+        <span id="date" th:text="${time}"></span>
     </blockquote>
     <fieldset class="layui-elem-field" id="lb">
         <legend>排行榜</legend>
@@ -28,32 +77,44 @@
                                     <li class="layui-col-xs6 layui-col-sm3">
                                         <a href="javascript:;" class="x-admin-backlog-body">
                                             <title>本月收入</title>
-                                            <ul>
-
+                                            <ul id="sortIncome">
+                                                <h3 th:each="oi:${otherIncome}" >
+                                                    <name th:text="${oi.nickname}"></name>
+                                                    <money th:text="${#numbers.formatDecimal(oi.money,0,2)}"></money>
+                                                </h3>
                                             </ul>
                                         </a>
                                     </li>
                                     <li class="layui-col-xs6 layui-col-sm3">
                                         <a href="javascript:;" class="x-admin-backlog-body">
                                             <title>本月消费</title>
-                                            <ul>
-
+                                            <ul id="sortPay">
+                                                <h3 th:each="op:${otherPay}">
+                                                    <name th:text="${op.nickname}"></name>
+                                                    <money th:text="${#numbers.formatDecimal(op.money,0,2)}"></money>
+                                                </h3>
                                             </ul>
                                         </a>
                                     </li>
                                     <li class="layui-col-xs6 layui-col-sm3">
                                         <a href="javascript:;" class="x-admin-backlog-body">
                                             <title>本月净收入</title>
-                                            <ul>
-
+                                            <ul id="sortProfit">
+                                                <h3 th:each="p:${profit}">
+                                                    <name th:text="${p.nickname}"></name>
+                                                    <money th:text="${#numbers.formatDecimal(p.money,0,2)}"></money>
+                                                </h3>
                                             </ul>
                                         </a>
                                     </li>
                                     <li class="layui-col-xs6 layui-col-sm3">
                                         <a href="javascript:;" class="x-admin-backlog-body">
                                             <title>支出方式</title>
-                                            <ul>
-
+                                            <ul id="pay">
+                                                <h3 th:each="t:${tags}">
+                                                    <name th:text="${t.tagName}"></name>
+                                                    <money th:text="${#numbers.formatDecimal(t.money,0,2)}"></money>
+                                                </h3>
                                             </ul>
                                         </a>
                                     </li>
@@ -74,14 +135,15 @@
 </div>
 </body>
 <script>
+    //TODO:将第一项数据突出显示
     $(function () {
         //init user Login info
         //初始化用户登录信息
 
-
-
         //加载数据
         showData();
+        // initSortChart();
+
 
         //init the charts
         //初始化统计图数据

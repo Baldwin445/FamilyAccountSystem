@@ -177,9 +177,6 @@ public class BillController {
     @RequestMapping("/getBillToCharts/{userid}")
     @ResponseBody
     public Result<Bill> getBillToCharts(@PathVariable String userid, String startTime, String endTime){
-        LogUtil.log("User", userid);
-        LogUtil.log("Start", startTime);
-        LogUtil.log("End", endTime);
         List<Bill> bills = billService.getBillToChart(Integer.valueOf(userid), startTime, endTime);
         if(bills == null) return ResultUtil.unSuccess();
         else return ResultUtil.success(bills);
