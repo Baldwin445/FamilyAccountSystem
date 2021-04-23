@@ -16,14 +16,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+import sun.rmi.runtime.Log;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName: BillController
@@ -180,6 +188,58 @@ public class BillController {
         List<Bill> bills = billService.getBillToChart(Integer.valueOf(userid), startTime, endTime);
         if(bills == null) return ResultUtil.unSuccess();
         else return ResultUtil.success(bills);
+    }
+
+    @RequestMapping(value = {"/tag", "/pages/chart_tag"})
+    public ModelAndView getTagToCharts(HttpServletRequest request, HttpServletResponse response){
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/chart/tag");
+        HttpSession session = request.getSession();
+        List<Bill> bills = billService.getBillToChart((int)session.getAttribute(UserUtil.CURRENT_USERID),
+                "2021-04-01", "2021-04-30");
+        //分类处理账单信息
+        Map<Integer, List<Bill>> map = bills.stream().collect(Collectors.groupingBy(Bill::getTypeid));
+
+        Map<String, JSONArray> jsonMap = billToSumSort(map.get(1));
+        mav.addObject("payName", jsonMap.get("name").toString());
+        mav.addObject("payNameValue", jsonMap.get("nameValue").toString());
+        mav.addObject("payValue", jsonMap.get("value").toString());
+        jsonMap = billToSumSort(map.get(2));
+        mav.addObject("incomeName", jsonMap.get("name").toString());
+        mav.addObject("incomeNameValue", jsonMap.get("nameValue").toString());
+        mav.addObject("incomeValue", jsonMap.get("value").toString());
+
+        return mav;
+    }
+
+    /**
+     * 将bill账单转为
+     * @param bills
+     * @return
+     */
+    private Map<String, JSONArray> billToSumSort(List<Bill> bills){
+        JSONArray name = new JSONArray(), value = new JSONArray(), nameValue = new JSONArray();
+        List<SortModel> datas = new ArrayList<>();
+        List<String> tagName = bills.stream().map(Bill::getTagName).distinct().collect(Collectors.toList());
+        Map<String, List<Bill>> billTag = bills.stream().collect(Collectors.groupingBy(Bill::getTagName));
+        for (String t: tagName){
+            JSONObject nameJson = new JSONObject(), valueJson = new JSONObject();
+            Double money = billTag.get(t).stream().mapToDouble(Bill::getMoney).sum();
+            
+            nameJson.put("name", t);
+            name.add(nameJson);
+
+            valueJson.put("value", money.floatValue());
+            value.add(valueJson);
+
+            valueJson.put("name", t);
+            nameValue.add(valueJson);
+        }
+        Map<String, JSONArray> map = new HashMap<>();
+        map.put("name", name);
+        map.put("nameValue", nameValue);
+        map.put("value", value);
+        return map;
     }
 
 }

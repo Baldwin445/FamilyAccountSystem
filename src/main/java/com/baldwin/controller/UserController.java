@@ -130,7 +130,7 @@ public class UserController {
     * HELLO.html            : using @ResponseBody
     * Just a "HELLO" word   : without using @ResponseBody
     * */
-    @RequestMapping(value = "/welcome")
+    @RequestMapping(value = {"/pages/welcome","/welcome"})
     public ModelAndView welcomePage(Model m, HttpServletRequest request){
         ModelAndView mav = new ModelAndView();
         mav.setViewName("welcome");
@@ -166,10 +166,6 @@ public class UserController {
         mav.addObject("profit", sortUser.get("profit"));
         mav.addObject("tags", sortUser.get("tags"));
 
-
-
-
-
         return mav;
     }
 
@@ -203,10 +199,10 @@ public class UserController {
 
         //get the range of the List
         List<User> userList = userService.getAllUser(begin, limit);
-        LogUtil.log(userList);
+//        LogUtil.log(userList);
         //put data into Json
         String js = UserUtil.userModelToJSON(userList);
-        LogUtil.log(js);
+//        LogUtil.log(js);
 
         int count = userService.countAllUser();
         String jso = "{\"code\":0,\"msg\":\"\",\"count\":"+count+",\"data\":"+js+"}";
@@ -362,7 +358,7 @@ public class UserController {
         tagSort = tagSort.stream().distinct().collect(Collectors.toList());
         tagSort = tagSort.stream().sorted(Comparator.comparing(SortModel::getMoney).reversed())
                 .collect(Collectors.toList());
-        LogUtil.log(tagSort);
+//        LogUtil.log(tagSort);
         if(profit.size() <= 3) tagSort = tagSort.subList(0, 3);
         else tagSort = tagSort.subList(0, profit.size());
         sortMap.put("tags", tagSort);

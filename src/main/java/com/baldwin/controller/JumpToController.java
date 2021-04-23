@@ -6,8 +6,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @ClassName: JumpToController
@@ -43,8 +46,14 @@ public class JumpToController {
     }
 
     @RequestMapping("/pages/null")
-    public String toPage() {
-        return "welcome";
+    public String toPage(HttpServletResponse response) {
+        try{
+            response.sendRedirect("/pages/welcome");
+        }catch (IOException e){
+            e.printStackTrace();
+            return "/welcome";
+        }
+        return null;
     }
 
     @RequestMapping("/test")

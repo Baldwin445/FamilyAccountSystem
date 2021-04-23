@@ -1,13 +1,308 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link th:href="@{/lib/layui/css/layui.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
+    <script type="text/javascript" th:src="@{/js/echarts.js}"></script>
+    <script th:src="@{/lib/layui/layui.js}"></script>
+    <style type="text/css">
+        .layui-tab-brief > .layui-tab-title .layui-this{
+            border-bottom: 3px solid #3f7dff;
+        }
+        .layui-tab-content{
+            padding: 3px;
+        }
+        @media screen and (max-width: 700px) {
+            #chart1, #chart2, #chart3, #chart4 {
+                width: 90% !important;
+                margin-left: 5%;
+            }
+        }
+    </style>
+
 </head>
 <body>
-<p>
-    chart_tag
-</p>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+    <legend>数据统计</legend>
+</fieldset>
+<div class="layui-tab layui-tab-brief" lay-filter="demo">
+    <ul class="layui-tab-title" style="text-align: center">
+        <li class="layui-this" lay-id="pay">支出</li>
+        <li lay-id="income">收入</li>
+    </ul>
+    <div class="layui-tab-content">
 
+        <div class="layui-tab-item layui-show">
+            <fieldset class="layui-elem-field site-demo-button">
+                <div id="chart1" class="layui-col-md6 layui-col-sm12" style="height: 700px;"></div>
+                <div id="chart3" class="layui-col-md6 layui-col-sm12" style="height: 700px;"></div>
+            </fieldset>
+        </div>
+        <div class="layui-tab-item">
+            <fieldset class="layui-elem-field site-demo-button">
+                <div id="chart2" class="layui-col-md6 layui-col-sm12" style="height: 700px;"></div>
+                <div id="chart4" class="layui-col-md6 layui-col-sm12" style="height: 700px;"></div>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    layui.use(['layer', 'element'], function() {
+        var layer = layui.layer
+            , element = layui.element;
+
+        var payName = "[[${payName}]]";
+        var payValue = "[[${payValue}]]";
+        var payNameValue = "[[${payNameValue}]]";
+        payName = payName.replace(/&quot;/g, '\"');
+        payValue = payValue.replace(/&quot;/g, '\"');
+        payNameValue = payNameValue.replace(/&quot;/g, '\"');
+        var incomeName = "[[${incomeName}]]";
+        var incomeValue = "[[${incomeValue}]]";
+        var incomeNameValue = "[[${incomeNameValue}]]";
+        incomeName = incomeName.replace(/&quot;/g, '\"');
+        incomeValue = incomeValue.replace(/&quot;/g, '\"');
+        incomeNameValue = incomeNameValue.replace(/&quot;/g, '\"');
+
+        showData();
+
+        initChartPay(eval(payName), eval(payValue), eval(payNameValue));
+        initChartIncome(eval(incomeName), eval(incomeValue), eval(incomeNameValue));
+
+    });
+
+
+    function showData() {
+        var start = new Date();
+        start.setDate(1);
+        var end = new Date();
+        end.setMonth(end.getMonth() + 1)
+        end.setDate(1);
+        var date = {
+            "startTime": start.toLocaleDateString().replace(/\//g, '-'),
+            "endTime": end.toLocaleDateString().replace(/\//g, '-')
+        }
+        var userid = sessionStorage.getItem("userid");
+
+    }
+
+    function initChartPay(dataName, dataValue, dataNameValue) {
+        var data = jsonToList(dataNameValue);
+        // 基于准备好的dom，初始化echarts实例
+        myChart1 = echarts.init(document.getElementById('chart1'));
+        myChart3 = echarts.init(document.getElementById('chart3'));
+
+        myChart1.setOption({
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                top: '5%',
+                left: 'center'
+            },
+            series: [
+                {
+                    name: dataName,
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '40',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: dataNameValue
+                }
+            ]
+        })
+
+        myChart3.setOption({
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            yAxis: {
+                type: 'category',
+                data: data.name
+            },
+            xAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: data.data,
+                type: 'bar',
+                showBackground: true,
+                backgroundStyle: {
+                    color: 'rgba(180, 180, 180, 0.2)'
+                },
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 2,
+                    normal: {
+                        label: {
+                            show: true, //开启显示
+                            position: 'right', //在右方显示
+                            textStyle: { //数值样式
+                                color: 'black',
+                                fontSize: 16
+                            }
+                        }
+                    }
+                },
+            }]
+        })
+    }
+
+    function initChartIncome(dataName, dataValue, dataNameValue) {
+        var data = jsonToList(dataNameValue);
+        // 基于准备好的dom，初始化echarts实例
+        myChart2 = echarts.init(document.getElementById('chart2'));
+        myChart4 = echarts.init(document.getElementById('chart4'));
+
+        myChart2.setOption({
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                top: '5%',
+                left: 'center'
+            },
+            series: [
+                {
+                    name: dataName,
+                    type: 'pie',
+                    radius: ['40%', '60%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '40',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: dataNameValue
+                }
+            ]
+        })
+
+        myChart4.setOption({
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            yAxis: {
+                type: 'category',
+                data: data.name
+            },
+            xAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: data.data,
+                type: 'bar',
+                showBackground: true,
+                backgroundStyle: {
+                    color: 'rgba(180, 180, 180, 0.2)'
+                },
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 2,
+                    normal: {
+                        label: {
+                            show: true, //开启显示
+                            position: 'right', //在右方显示
+                            textStyle: { //数值样式
+                                color: 'black',
+                                fontSize: 16
+                            }
+                        }
+                    }
+                },
+            }]
+        })
+
+    }
+    
+    function listToJson(list) {
+        console.log(list.type);
+        var legendData = [];
+        var seriesData = [];
+        for(var l in list){
+            // console.log(l);
+            // console.log(list[l]);
+            // console.log(list[l].tagName);
+            legendData.push(list[l].tagName);
+            seriesData.push({
+                name: list[l].tagName,
+                value: list[l].money
+            });
+        }
+        return {
+            legendData: legendData,
+            seriesData: seriesData
+        };
+    }
+
+    function jsonToList(json) {
+        var names = [];    //用来盛放X轴坐标值
+        var value = [];    //用来盛放Y坐标值
+        $.each(json, function (index, item) {
+            names.push(item.name);    //挨个取出类别并填入类别数组
+            value.push(item.value);    //挨个取出销量并填入销量数组
+        });
+        return{
+            name: names,
+            data: value
+        }
+    }
+
+</script>
 </html>
