@@ -105,4 +105,13 @@
         VALUE (null, #{relation}, #{nickname}, #{realname}, #{tel}, #{email})
     </insert>
 
+    <select id="getHomeMember" resultMap="userInfoBean">
+        SELECT id, nickname, realname, relation, tel, email, access
+        FROM permission RIGHT JOIN (user AS u LEFT JOIN roleinfo AS r ON u.roleid = r.roleid)
+                                   ON u.id = permission.userid
+        WHERE u.homeid = #{homeID}
+        ORDER BY id ASC
+        LIMIT #{begin},#{num}
+    </select>
+
 </mapper>

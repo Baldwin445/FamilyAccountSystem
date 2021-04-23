@@ -246,6 +246,20 @@ public class UserController {
         return ResultUtil.unSuccess("未知错误 未能成功执行");
     }
 
+    @RequestMapping(value = "/getHomeMember/{userid}")
+    @ResponseBody
+    public String getHomeMember(@PathVariable String userid, int page, int limit){
+        //TODO：默认家庭成员在10人以下，直接对成员列表取size()
+        int begin = limit * (page - 1);
+        User user = userService.getUserByID(Integer.valueOf(userid));
+        int homeID = user.getHouseId();
+        List<User> userList = userService.getHomeMember(user.getHouseId(), begin, limit);
+        String js = UserUtil.userModelToJSON(userList);
+
+        int count = userList.size();
+        String jso = "{\"code\":0,\"msg\":\"\",\"count\":"+count+",\"data\":"+js+"}";
+        return jso;
+    }
 
     /**
      *

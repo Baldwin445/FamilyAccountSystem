@@ -162,5 +162,10 @@ public class UserServiceImpl implements UserService {
         return ResultUtil.success(user);
     }
 
+    @Override
+    public List<User> getHomeMember(int homeID, int begin, int num) {
+        return mapper.getHomeMember(homeID, begin, num);
+    }
+
 
 }

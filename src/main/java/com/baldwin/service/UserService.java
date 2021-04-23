@@ -33,5 +33,7 @@ public interface UserService {
     Result addAdminOrUser(User user);
     Result addHost(User user);
 
+    List<User> getHomeMember(int homeID, int begin, int num);
+
 
 }

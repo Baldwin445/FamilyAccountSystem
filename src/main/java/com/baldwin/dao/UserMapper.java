@@ -41,4 +41,6 @@ public interface UserMapper {
 
     int addRoleInfo(RoleInfo roleInfo);
 
+    List<User> getHomeMember(int homeID, int begin, int num);
+
 }
