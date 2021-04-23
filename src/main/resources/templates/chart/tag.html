@@ -70,8 +70,17 @@
 
         showData();
 
+        //监听tab选项
+        element.on('tab(demo)', function (data){
+            // console.log(data.index); //得到当前Tab的所在下标
+            if(data.index == 0)
+                initChartPay(eval(payName), eval(payValue), eval(payNameValue));
+            if(data.index == 1)
+                initChartIncome(eval(incomeName), eval(incomeValue), eval(incomeNameValue));
+        });
+
         initChartPay(eval(payName), eval(payValue), eval(payNameValue));
-        initChartIncome(eval(incomeName), eval(incomeValue), eval(incomeNameValue));
+        // initChartIncome(eval(incomeName), eval(incomeValue), eval(incomeNameValue));
 
     });
 

@@ -212,6 +212,22 @@ public class BillController {
         return mav;
     }
 
+    @RequestMapping(value = {"/platform", "/pages/chart_platform"})
+    public ModelAndView getUserBillToCharts(HttpServletRequest request){
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/chart/platform");
+        HttpSession session = request.getSession();
+        List<Bill> bills = billService.getBillToChart((int)session.getAttribute(UserUtil.CURRENT_USERID),
+                "2021-04-01", "2021-04-30");
+        SortModel sm = getUserDataToChart(bills);
+        mav.addObject("payList", JSONArray.fromObject(sm.getPay()).toString());
+        mav.addObject("incomeList",  JSONArray.fromObject(sm.getIncome()));
+        mav.addObject("profitList", JSONArray.fromObject(sm.getProfit()));
+        mav.addObject("userList", JSONArray.fromObject(sm.getUsername()));
+
+        return mav;
+    }
+
     /**
      * 将bill账单转为
      * @param bills
@@ -240,6 +256,36 @@ public class BillController {
         map.put("nameValue", nameValue);
         map.put("value", value);
         return map;
+    }
+
+    private SortModel getUserDataToChart(List<Bill> bills){
+        SortModel sm = new SortModel();
+        List<Float> pay=new ArrayList<>(), income=new ArrayList<>(), profit=new ArrayList<>();
+        List<String> user=new ArrayList<>();
+
+        List<Integer> userid = bills.stream().map(Bill::getUserid).distinct().collect(Collectors.toList());
+        Map<Integer, List<Bill>> map = bills.stream().collect(Collectors.groupingBy(Bill::getUserid));
+        for (Integer id: userid){
+            Double payM, incomeM;
+            List<Bill> temp = map.get(id);
+            Map<Integer, List<Bill>> mapBillType =temp.stream().collect(Collectors.groupingBy(Bill::getTypeid));
+            if(null != mapBillType.get(1))
+                payM = mapBillType.get(1).stream().mapToDouble(Bill::getMoney).sum();
+            else payM = 0.0;
+            if(null != mapBillType.get(2))
+                incomeM = mapBillType.get(2).stream().mapToDouble(Bill::getMoney).sum();
+            else incomeM = 0.0;
+            pay.add(-payM.floatValue());
+            income.add(incomeM.floatValue());
+            profit.add(incomeM.floatValue()-payM.floatValue());
+            user.add(userService.getUserByID(id).getRoleInfo().getNickname());
+        }
+        sm.setIncome(income);
+        sm.setPay(pay);
+        sm.setProfit(profit);
+        sm.setUsername(user);
+
+        return sm;
     }
 
 }
