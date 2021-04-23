@@ -19,6 +19,10 @@
             <result column="realname" property="realname"/>
             <result column="nickname" property="nickname"/>
         </association>
+        <association property="reimburse" javaType="com.baldwin.entity.Reimburse">
+            <result column="state" property="state"/>
+            <result column="reduce" property="reduce"/>
+        </association>
     </resultMap>
 
     <insert id="addPayBill" parameterType="com.baldwin.entity.Bill" useGeneratedKeys="true" keyProperty="id">
@@ -159,6 +163,25 @@
                  LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
                  LEFT JOIN billcollection ON user.id = billcollection.userid
         WHERE billcollection.collectid = #{collectID}
+    </select>
+
+    <select id="getReimburse" resultMap="billInfoBean">
+        SELECT * FROM
+            bill LEFT JOIN tag ON tag.tagid = bill.tagid
+                 LEFT JOIN user ON user.id = bill.userid
+                 LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
+                 RIGHT JOIN reimburse ON bill.id = reimburse.id
+        WHERE reimburse.userid = #{userID}
+        LIMIT #{begin}, #{num}
+    </select>
+
+    <select id="countReimburse" resultType="int">
+        SELECT count(1) FROM
+            bill LEFT JOIN tag ON tag.tagid = bill.tagid
+                 LEFT JOIN user ON user.id = bill.userid
+                 LEFT JOIN roleinfo ON user.roleid = roleinfo.roleid
+                 RIGHT JOIN reimburse ON bill.id = reimburse.id
+        WHERE reimburse.userid = #{userID}
     </select>
 
 </mapper>

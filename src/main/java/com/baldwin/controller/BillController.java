@@ -228,6 +228,17 @@ public class BillController {
         return mav;
     }
 
+    @RequestMapping("/getReimburseYet/{userid}")
+    @ResponseBody
+    public String getReimburseYet(@PathVariable String userid, int page, int limit){
+        int begin = (page - 1) * limit;
+        List<Bill> bills = billService.getReimburse(Integer.valueOf(userid), begin, limit);
+        int count = billService.countReimburse(Integer.valueOf(userid));
+        JSONArray json = JSONArray.fromObject(bills);
+
+        return "{\"code\":0,\"msg\":\"上传成功！\",\"count\":"+count+",\"data\":"+json.toString()+"}";
+    }
+
     /**
      * 将bill账单转为
      * @param bills

@@ -232,6 +232,16 @@ public class BillServiceImpl implements BillService {
         return list;
     }
 
+    @Override
+    public List<Bill> getReimburse(int userID, int begin, int num) {
+        return billMapper.getReimburse(userID, begin, num);
+    }
+
+    @Override
+    public int countReimburse(int userID) {
+        return billMapper.countReimburse(userID);
+    }
+
     /**
      * Use to set the Tag Param
      * @param userid 用户id

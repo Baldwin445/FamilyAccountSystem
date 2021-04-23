@@ -1,6 +1,7 @@
 package com.baldwin.service;
 
 import com.baldwin.entity.Bill;
+import com.baldwin.entity.User;
 import com.baldwin.entity.WeChatData;
 
 import java.util.List;
@@ -31,4 +32,9 @@ public interface BillService {
                         String name, int tagID, int typeID);
 
     List<Bill> getBillToChart(int userid, String startDate, String endDate);
+
+    List<Bill> getReimburse(int userID, int begin, int num);
+
+    int countReimburse(int userID);
+
 }

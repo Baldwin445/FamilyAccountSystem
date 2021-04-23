@@ -14,14 +14,7 @@ public class Bill {
     private String time;
     private User user;
     private RoleInfo roleInfo;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    private Reimburse reimburse;
 
     @Override
     public String toString() {
@@ -39,7 +32,24 @@ public class Bill {
                 ", time='" + time + '\'' +
                 ", user=" + user +
                 ", roleInfo=" + roleInfo +
+                ", reimburse=" + reimburse +
                 '}';
+    }
+
+    public Reimburse getReimburse() {
+        return reimburse;
+    }
+
+    public void setReimburse(Reimburse reimburse) {
+        this.reimburse = reimburse;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public User getUser() {

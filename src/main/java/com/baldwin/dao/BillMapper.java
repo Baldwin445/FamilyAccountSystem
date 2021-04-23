@@ -48,4 +48,8 @@ public interface BillMapper {
     int countSearchHomeBill(int homeid,
                               String startDate, String endDate,
                               String name, int tagid, int typeid);
+
+    List<Bill> getReimburse(int userID, int begin, int num);
+
+    int countReimburse(int userID);
 }
